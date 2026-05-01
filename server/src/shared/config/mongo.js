@@ -36,7 +36,6 @@ class MongoConnect {
             });
 
             return this.connection;
-
         } catch (error) {
             logger.error("Failed to connect to MongoDB:", error);
             throw error;
@@ -63,4 +62,4 @@ class MongoConnect {
     }
 }
 
-export default MongoConnect;
+export default MongoConnect();
