@@ -12,8 +12,8 @@ const config = {
 
     // MOngodb
     mongo: {
-        uri: process.env.MONGO_URI || 'mongodb://localhost:27017/api_monitoring',
-        dbName: process.env.MONGO_DB_NAME || 'api_monitoring',
+        uri: process.env.MONGO_URI || 'mongodb://localhost:27017/api_monitoring_system',
+        dbName: process.env.MONGO_DB_NAME || 'api_monitoring_system',
     },
 
     // postgreSQL
@@ -35,7 +35,7 @@ const config = {
     },
 
     jwt: {
-        secret: process.env.JWT_SECRET || "SABKA_VALINTINE_WEEK_KAISE_JA_RAHA_HAI",
+        secret: process.env.JWT_SECRET ,
         expiresIn: process.env.JWT_EXPIRES_IN || '24h',
     },
 

@@ -13,7 +13,7 @@ const logger= winston.createLogger({
         winston.format.json()   
     ),
 
-    defaultMeta: {service: api_monitoring_system},
+    defaultMeta: {service: "api_monitoring_system"},
 
     transports:[
         new winston.transports.File({filename: 'logs/error.log', level: "error"}),
@@ -22,7 +22,7 @@ const logger= winston.createLogger({
 })
 
 if(config.node_env != "prduction"){
-    logger.add(new winston.transport.Console({
+    logger.add(new winston.transports.Console({
         format: winston.combine(
             winston.format.colorize(),
             winston.format.simple()
@@ -30,3 +30,5 @@ if(config.node_env != "prduction"){
     }
     ))
 }
+
+export default logger
