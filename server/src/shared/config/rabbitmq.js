@@ -1,7 +1,7 @@
 import amqp from "amqplib";
 import config from "./index.js";
 import logger from "./logger.js";
-import { error, log } from "winston";
+
 
 class RabbitMQConnection {
     constructor() {
@@ -49,7 +49,7 @@ class RabbitMQConnection {
             this.connection.on("close", () => {
                 logger.warn("RabbitMQ connection closed");
                 this.connection = null;
-                this.channel - null;
+                this.channel = null;
                 this.isConnecting = false;
             });
 
@@ -70,7 +70,7 @@ class RabbitMQConnection {
 
     getChannel() {
         if (this.channel) return this.channel;
-        throw error;
+        throw new Error("RabbitMQ channel not initialized");
     }
 
     getStatus() {
@@ -81,3 +81,5 @@ class RabbitMQConnection {
         return "Connected";
     }
 }
+
+export default new RabbitMQConnection();

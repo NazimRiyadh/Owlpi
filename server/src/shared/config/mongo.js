@@ -23,7 +23,7 @@ class MongoConnect {
             this.connection = mongoose.connection;
             this.isConnected = true;
 
-            logger.info(`MongoDB connected at: ${config.mongo.uri}`);
+            logger.info(`MongoDB connected at: ${config.mongo.dbName}`);
 
             // attach listeners correctly
             this.connection.on("error", (error) => {
@@ -62,4 +62,4 @@ class MongoConnect {
     }
 }
 
-export default MongoConnect();
+export default new MongoConnect();
