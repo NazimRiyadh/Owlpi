@@ -10,7 +10,6 @@ class MongoConnect {
 
     async connect() {
         try {
-            // prevent multiple connections
             if (this.isConnected && this.connection) {
                 logger.info("MongoDB connection already exists");
                 return this.connection;
@@ -25,7 +24,7 @@ class MongoConnect {
 
             logger.info(`MongoDB connected at: ${config.mongo.dbName}`);
 
-            // attach listeners correctly
+            //catch error after the connection established
             this.connection.on("error", (error) => {
                 logger.error("MongoDB connection error:", error);
             });
@@ -37,6 +36,7 @@ class MongoConnect {
 
             return this.connection;
         } catch (error) {
+            //catches the error while connecting first time
             logger.error("Failed to connect to MongoDB:", error);
             throw error;
         }
