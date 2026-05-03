@@ -2,14 +2,13 @@ import amqp from "amqplib";
 import config from "./index.js";
 import logger from "./logger.js";
 
-
 class RabbitMQConnection {
     constructor() {
         this.connection = null;
         this.channel = null;
         this.isConnecting = false;
     }
-    async Connect() {
+    async connect() {
         if (this.connection) {
             logger.info("RabbitMQ connection already exists");
             return this.channel;
@@ -79,6 +78,22 @@ class RabbitMQConnection {
         if (this.isConnecting) return "Connecting";
 
         return "Connected";
+    }
+    async close() {
+        try {
+            if (this.channel) {
+                await this.channel.close();
+                this.channel = null;
+            }
+            if (this.connection) {
+                await this.connection.close();
+                this.connection = null;
+            }
+
+            logger.info("RabbitMQ connection closed");
+        } catch (error) {
+            logger.error("Error in closing RabbitMQ connection:", error);
+        }
     }
 }
 
