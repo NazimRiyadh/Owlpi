@@ -2,12 +2,6 @@ import mongoose from "mongoose";
 import securityUtils from "../utils/securityUtils.js";
 import bcrypt from "bcryptjs";
 
-/**
- * User Schema - Represents a user in the system with authentication and role-based access control.
- * Each user can be associated with a client (except super_admin) and has specific permissions.
- * Passwords are hashed before saving to the database for security.
- */
-
 const schemaDefinition = {
     username: {
         type: String,

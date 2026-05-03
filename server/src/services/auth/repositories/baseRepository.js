@@ -1,6 +1,9 @@
 class BaseRepository {
     constructor(model) {
         this.model = model;
+        if (!model) {
+            throw new Error("BaseRepository requires a valid model");
+        }
     }
 
     async create(data) {
@@ -23,3 +26,5 @@ class BaseRepository {
         throw new Error("Method not implemented");
     }
 }
+
+export default BaseRepository;

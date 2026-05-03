@@ -10,10 +10,17 @@ import errorhandler from "./shared/middlewares/errorHandler.js";
 import ResponseFormat from "./shared/utils/responseFormat.js";
 import cookieParser from "cookie-parser";
 
+import authRouter from "./services/auth/routes/authRoutes.js";
+
 const app = express();
 
 app.use(helmet());
-app.use(cors());
+app.use(
+    cors({
+        origin: true,
+        credentials: true,
+    }),
+);
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -39,7 +46,7 @@ app.get("/health", (req, res) => {
     );
 });
 
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
     res.status(200).json(
         ResponseFormat.success(
             {
@@ -57,9 +64,13 @@ app.use("/", (req, res) => {
     );
 });
 
+app.use("/api/auth", authRouter);
+
 app.use((req, res) => {
     res.status(404).json(ResponseFormat.error("Endpoint not found", 404));
 });
+
+app.use(errorhandler);
 
 async function initializeConnection() {
     try {
@@ -104,8 +115,6 @@ async function startServer() {
                 process.exit(1);
             }
         };
-
-
 
         process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
         process.on("SIGINT", () => gracefulShutdown("SIGINT"));
