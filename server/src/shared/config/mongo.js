@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import config from ".";
-import logger from "./logger";
+import config from "./index.js";
+import logger from "./logger.js";
 
 class MongoConnect {
     constructor() {

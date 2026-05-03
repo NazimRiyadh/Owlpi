@@ -1,5 +1,5 @@
-import winston, { format, level, log } from "winston";
-import config from "./index";
+import winston from "winston";
+import config from "./index.js";
 
 /**
  * Winston logger configuration
