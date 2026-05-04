@@ -99,21 +99,27 @@ async function startServer() {
             logger.info(`API available at: http://localhost:${config.port}`);
         });
 
-        const gracefulShutdown = async (signal) => {
-            logger.info(`${signal} received, shutting down gracefully!`);
-            server.close(async () => {
-                logger.info("Closing HTTP request....");
+const gracefulShutdown = async (signal) => {
+    logger.info(`${signal} received, shutting down gracefully!`);
+    try {
+        await new Promise((resolve, reject) => {
+            server.close((error) => {
+                if (error) return reject(error);
+                logger.info("HTTP server closed");
+                resolve();
             });
-            try {
-                await mongo.disconnect();
-                await postgres.close();
-                await rabbitmq.close();
-                logger.info("All connections closed, exiting process");
-                process.exit(0);
-            } catch (error) {
-                logger.error("Error during shutdown:", error);
-                process.exit(1);
-            }
+        });
+
+        await mongo.disconnect();
+        await postgres.close();
+        await rabbitmq.close();
+        logger.info("All connections closed, exiting process");
+        process.exit(0);
+    } catch (error) {
+        logger.error("Error during shutdown:", error);
+        process.exit(1);
+    }
+};
         };
 
         process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
