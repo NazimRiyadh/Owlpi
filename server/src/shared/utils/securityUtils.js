@@ -1,7 +1,13 @@
 class securityUtils {
     // Password requirements can be configured via environment variables
     static PASSWORD_REQUIREMENTS = {
-        minLength: parseInt(process.env.PASSWORD_MIN_LENGTH || "8"),
+        minLength: (() => {
+            const value = Number.parseInt(
+                process.env.PASSWORD_MIN_LENGTH ?? "8",
+                10,
+            );
+            return Number.isInteger(value) && value > 0 ? value : 8;
+        })(),
         requireUppercase:
             (process.env.PASSWORD_REQUIRE_UPPERCASE || "true") === "true",
         requireLowercase:
