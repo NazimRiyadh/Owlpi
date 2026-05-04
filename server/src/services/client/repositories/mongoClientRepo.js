@@ -13,6 +13,7 @@ class MongoClientRepository extends BaseClientRepository {
             await client.save();
 
             logger.info("Client create successfully");
+            return client;
         } catch (error) {
             logger.error("Error creating client in database");
             throw error;
@@ -21,7 +22,7 @@ class MongoClientRepository extends BaseClientRepository {
 
     async findById(clientId) {
         try {
-            const client = new this.model.findById();
+            const client = await this.model.findById(clientId);
             logger.info("Client found successfully");
 
             return client;

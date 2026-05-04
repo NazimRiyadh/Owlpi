@@ -20,5 +20,5 @@ class Container {
 }
 
 const initialized = Container.init();
-
-export default { initialized, Container };
+export { Container };
+export default initialized;
