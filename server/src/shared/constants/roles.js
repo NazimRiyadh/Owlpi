@@ -4,6 +4,7 @@ export const CLIENT_ROLES = ["client_admin", "client_viewer"];
 
 export const APPLICATION_ROLES = {
     SUPER_ADMIN: "super_admin",
+    CLIENT_ADMIN: "client_admin",
     CLIENT_VIEWER: "client_viewer",
 };
 

@@ -3,6 +3,7 @@ import AppError from "#src/shared/utils/appError.js";
 import jwt from "jsonwebtoken";
 import config from "#src/shared/config/index.js";
 import bcrypt from "bcryptjs";
+import { APPLICATION_ROLES } from "#src/shared/constants/roles.js";
 
 export class AuthService {
     constructor(userRepository) {
@@ -138,6 +139,19 @@ export class AuthService {
             return userProfile;
         } catch (error) {
             logger.error("Error fetching profile", error);
+            throw error;
+        }
+    }
+
+    async checkSuperAdmin(userId) {
+        try {
+            const user = await this.userRepository.findById(userId);
+            if (!user) {
+                throw new AppError("User not found", 404);
+            }
+            return user.role === APPLICATION_ROLES.SUPER_ADMIN;
+        } catch (error) {
+            logger.error("Error checking super admin");
             throw error;
         }
     }

@@ -11,7 +11,7 @@ import {
 import { APPLICATION_ROLES } from "#src/shared/constants/roles.js";
 
 const authRouter = express.Router();
-const { controllers } = authDependency.initialized;
+const { controllers } = authDependency;
 const authController = controllers.authController;
 
 authRouter.post(
