@@ -1,3 +1,4 @@
+import crypto from "crypto";
 class securityUtils {
     // Password requirements can be configured via environment variables
     static PASSWORD_REQUIREMENTS = {
@@ -72,6 +73,9 @@ class securityUtils {
             success: errors.length === 0,
             errors,
         };
+    }
+    static generateApiKey() {
+        return crypto.randomBytes(32).toString("hex");
     }
 }
 

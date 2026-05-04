@@ -39,4 +39,68 @@ export class ClientController {
             next(error);
         }
     }
+
+    async createClientUser(req, res, next) {
+        try {
+            const { clientId } = req.params;
+            const user = await this.clientService.createClientUser(
+                clientId,
+                req.body,
+                req.user,
+            );
+            return res
+                .status(201)
+                .json(
+                    ResponseFormat.success(
+                        user,
+                        "Client user created successfully",
+                        201,
+                    ),
+                );
+        } catch (error) {
+            next(error);
+        }
+    }
+    async createApiKey(req, res, next) {
+        try {
+            const { clientId } = req.params;
+            const apiKey = await this.clientService.createApiKey(
+                clientId,
+                req.body,
+                req.user,
+            );
+            return res
+                .status(201)
+                .json(
+                    ResponseFormat.success(
+                        apiKey,
+                        "API key created successfully",
+                        201,
+                    ),
+                );
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getClientApiKeys(req, res, next) {
+        try {
+            const { clientId } = req.params;
+            const apiKey = await this.clientService.getClientApiKeys(
+                clientId,
+                req.user,
+            );
+            return res
+                .status(200)
+                .json(
+                    ResponseFormat.success(
+                        apiKey,
+                        "API key fetched successfully",
+                        200,
+                    ),
+                );
+        } catch (error) {
+            next(error);
+        }
+    }
 }
