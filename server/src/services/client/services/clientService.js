@@ -4,7 +4,7 @@ import {
     isValidClientRole,
 } from "#src/shared/constants/roles.js";
 import logger from "#src/shared/config/logger.js";
-import { v4 as uuidv4 } from "uuid";
+import crypto from "node:crypto";
 import securityUtils from "#src/shared/utils/securityUtils.js";
 import ResponseFormat from "#src/shared/utils/responseFormat.js";
 
