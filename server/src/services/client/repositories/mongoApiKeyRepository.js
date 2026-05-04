@@ -36,13 +36,16 @@ class MongoApiKeyRepository extends BaseApiKeyRepository {
         }
     }
 
-    async findByClientId(clientId, filters = {}) {
+    async findByClientId(clientId, filters = {}, options = {}) {
         try {
+            const { limit = 50, skip = 0 } = options;
             const query = { clientId, ...filters };
             const apiKeys = await this.model
                 .find(query)
                 .populate("createdBy", "username email")
-                .sort({ createdAt: -1 });
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit);
 
             return apiKeys;
         } catch (error) {

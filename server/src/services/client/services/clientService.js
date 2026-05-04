@@ -6,6 +6,7 @@ import {
 import logger from "#src/shared/config/logger.js";
 import { v4 as uuidv4 } from "uuid";
 import securityUtils from "#src/shared/utils/securityUtils.js";
+import ResponseFormat from "#src/shared/utils/responseFormat.js";
 
 class ClientService {
     constructor(dependencies) {
@@ -42,7 +43,7 @@ class ClientService {
             .replace(/[^a-z0-9\s-]/g, "")
             .replace(/\s+/g, "-")
             .replace(/-+/g, "-")
-            .trim();
+            .replace(/^-+|-+$/g, "");
     }
 
     canUserAccessClient(user, clientId) {
@@ -54,6 +55,13 @@ class ClientService {
             user.clientId && user.clientId.toString() === clientId.toString()
         );
     }
+
+    generateApiKey() {
+        const prefix = "apim";
+        const randomBytes = crypto.randomBytes(20).toString("hex");
+        return `${prefix}_${randomBytes}`;
+    }
+
     async createClient(clientData, adminData) {
         try {
             const { name, email, description, website } = clientData;
@@ -86,6 +94,17 @@ class ClientService {
                 throw new AppError("Access denied", 403);
             }
 
+            // Only Client Admins (and Super Admins) can create users
+            if (
+                adminUser.role !== APPLICATION_ROLES.SUPER_ADMIN &&
+                adminUser.role !== APPLICATION_ROLES.CLIENT_ADMIN
+            ) {
+                throw new AppError(
+                    "Only Client Administrators can create new users",
+                    403,
+                );
+            }
+
             const {
                 username,
                 email,
@@ -97,8 +116,21 @@ class ClientService {
                 throw new AppError("Invalid role for client user", 400);
             }
 
-            const client = await this.clientRepository.findById(clientId);
+            // Prevent privilege escalation
+            // A Client Viewer should not be able to create a Client Admin
+            if (role === APPLICATION_ROLES.CLIENT_ADMIN) {
+                if (
+                    adminUser.role !== APPLICATION_ROLES.SUPER_ADMIN &&
+                    adminUser.role !== APPLICATION_ROLES.CLIENT_ADMIN
+                ) {
+                    throw new AppError(
+                        "You are not authorized to create a Client Admin user",
+                        403,
+                    );
+                }
+            }
 
+            const client = await this.clientRepository.findById(clientId);
             if (!client) {
                 throw new AppError("Client not found", 404);
             }
@@ -111,7 +143,6 @@ class ClientService {
                 canExportData: false,
             };
 
-            // If the role is client admin, update permissions accordingly
             if (role === APPLICATION_ROLES.CLIENT_ADMIN) {
                 permissions = {
                     canCreateApiKeys: true,
@@ -134,6 +165,7 @@ class ClientService {
                 clientId,
                 userId: user._id,
                 role,
+                createdBy: adminUser.userId || adminUser._id,
             });
 
             return this.formatClientResponse(user);
@@ -169,8 +201,8 @@ class ClientService {
 
             const { name, description, environment = "production" } = keyData;
 
-            const keyId = uuidv4();
-            const keyValue = securityUtils.generateApiKey();
+            const keyId = uudiv4();
+            const keyValue = this.generateApiKey();
 
             const apiKey = await this.apiKeyRepository.create({
                 keyId,
