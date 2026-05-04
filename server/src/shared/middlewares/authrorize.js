@@ -11,7 +11,7 @@ const authorize =
 
             // skip
             if (allowedRoles.length === 0) {
-                next();
+                return next();
             }
 
             if (!allowedRoles.includes(req.user.role)) {
@@ -22,9 +22,9 @@ const authorize =
                     );
             }
 
-            next();
+            return next();
         } catch (error) {
-            return res.status(403).json(ResponseFormat.error("Forbidden", 403));
+            return next(error);
         }
     };
 

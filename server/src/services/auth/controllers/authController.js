@@ -84,7 +84,7 @@ class AuthController {
             res.status(200).json(
                 ResponseFormat.success(
                     user,
-                    "User logged in Successfullly",
+                    "User logged in successfullly",
                     200,
                 ),
             );

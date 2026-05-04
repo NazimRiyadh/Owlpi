@@ -13,7 +13,11 @@ const validate = (schema) => (req, res, next) => {
 
         if (
             rules.required &&
-            (value === undefined || value === null || value === "")
+            (value === undefined ||
+                value === null ||
+                (typeof value === "string"
+                    ? value.trim() === ""
+                    : value === ""))
         ) {
             errors.push(`${field} is required`);
             return;

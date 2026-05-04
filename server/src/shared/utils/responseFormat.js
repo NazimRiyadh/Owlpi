@@ -29,7 +29,7 @@ class ResponseFormat {
         };
     }
 
-    static paginated(data = null, page, limit, total) {
+    static paginated(data = null, page = 1, limit = 10, total = 0) {
         return {
             success: true,
             data,

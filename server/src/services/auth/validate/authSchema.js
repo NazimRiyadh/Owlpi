@@ -9,7 +9,7 @@ export const onboardSuperAdminSchema = {
     },
     password: {
         required: true,
-        minLength: 6,
+        minLength: 8,
     },
 };
 
@@ -22,7 +22,7 @@ export const registrationSchema = {
     },
     password: {
         required: true,
-        minLength: 6,
+        minLength: 8,
     },
     role: {
         required: false,

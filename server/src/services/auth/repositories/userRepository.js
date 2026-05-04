@@ -65,7 +65,7 @@ class MongoUserRepository extends BaseRepository {
                 .select("-password");
             return user;
         } catch (error) {
-            logger.error("Error finding user by email", error);
+            logger.error("Error finding users", error);
             throw error;
         }
     }
