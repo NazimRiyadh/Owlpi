@@ -96,9 +96,9 @@ const userSchema = new mongoose.Schema(schemaDefinition, {
 });
 
 // DB middleware -> Hash password before saving, prevents password saving without hashing
-userSchema.pre("save", async function () {
+userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) {
-        return;
+        return next();
     }
 
     const salt = await bcrypt.genSalt(10);

@@ -33,6 +33,12 @@ export class AuthService {
         return bcrypt.compare(enteredPassword, hashedpassword);
     }
 
+    sanitizeUser(userDoc) {
+        const u = userDoc?.toObject ? userDoc.toObject() : { ...userDoc };
+        delete u.password;
+        return u;
+    }
+
     async onboardSuperAdmin(superAdminData) {
         try {
             const existingUser = await this.userRepository.findAll();
@@ -49,7 +55,7 @@ export class AuthService {
             });
 
             return {
-                user: user,
+                user: this.sanitizeUser(user),
                 token,
             };
         } catch (error) {
@@ -82,7 +88,7 @@ export class AuthService {
             });
 
             return {
-                user: user,
+                user: this.sanitizeUser(user),
                 token,
             };
         } catch (error) {
@@ -113,7 +119,7 @@ export class AuthService {
             const token = this.generateToken(user);
             logger.info("User logged in Successfully");
             return {
-                user: user,
+                user: this.sanitizeUser(user),
                 token,
             };
         } catch (error) {

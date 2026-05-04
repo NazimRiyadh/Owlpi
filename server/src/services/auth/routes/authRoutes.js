@@ -39,7 +39,7 @@ authRouter.get("/profile", requestLogger, authenticate, (req, res, next) =>
     authController.getProfile(req, res, next),
 );
 
-authRouter.get("/logout", requestLogger, (req, res, next) =>
+authRouter.post("/logout", requestLogger, (req, res, next) =>
     authController.logout(req, res, next),
 );
 
