@@ -69,7 +69,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/hit", ingestRouter);
-app.use("/api/analytics", (req, res, next) => { console.log("Hit /api/analytics"); next(); }, analyticsRouter);
+app.use("/api/analytics", analyticsRouter);
 app.use("/api", clientRouter);
 
 app.use((req, res) => {

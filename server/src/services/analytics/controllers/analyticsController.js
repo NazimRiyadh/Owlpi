@@ -8,7 +8,6 @@ export class AnalyticsController {
         authService: authSvc,
         clientRepository: clientRepo,
     } = {}) {
-        // Require explicit dependencies to enforce DI and deterministic graphs
         if (!analyticsSvc || !authSvc || !clientRepo) {
             throw new Error(
                 "AnalyticsController requires analyticsService, authService, and clientRepository",
