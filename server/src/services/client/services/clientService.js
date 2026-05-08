@@ -6,6 +6,7 @@ import {
 import logger from "#src/shared/config/logger.js";
 import crypto from "node:crypto";
 import securityUtils from "#src/shared/utils/securityUtils.js";
+import { v4 as uuidv4 } from "uuid";
 import ResponseFormat from "#src/shared/utils/responseFormat.js";
 
 class ClientService {
@@ -201,7 +202,7 @@ class ClientService {
 
             const { name, description, environment = "production" } = keyData;
 
-            const keyId = uudiv4();
+            const keyId = uuidv4();
             const keyValue = this.generateApiKey();
 
             const apiKey = await this.apiKeyRepository.create({
@@ -239,6 +240,31 @@ class ClientService {
             return formattedResponse;
         } catch (error) {
             logger.error("Error getting client API keys:", error);
+            throw error;
+        }
+    }
+
+    async getClientByApiKey(apiKey) {
+        try {
+            const key = await this.apiKeyRepository.findByKeyValue(apiKey);
+
+            if (!key) {
+                return null;
+            }
+
+            if (key.isExpired()) {
+                return null;
+            }
+
+            // Get the populated client from the key
+            const client = key.clientId;
+
+            return {
+                client,
+                apiKey: key,
+            };
+        } catch (error) {
+            logger.error("Error finding client by API key:", error);
             throw error;
         }
     }

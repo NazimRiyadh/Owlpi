@@ -7,11 +7,10 @@ import {
     createUserSchema,
     createApiKeySchema,
 } from "../validate/clientSchema.js";
-import { ClientController } from "../controllers/clientController.js";
+
 
 const router = express.Router();
-
-const { clientController } = clientDependencies.controllers;
+const { clientController } = clientDependencies.initialized.controllers;
 
 router.use(authenticate);
 

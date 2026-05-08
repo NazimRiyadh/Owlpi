@@ -1,7 +1,14 @@
 import { EventEmitter } from "node:events";
 
-export class ConfirmChannelManager extends EventEmitter {
+export default class ConfirmChannelManager extends EventEmitter {
     constructor(rabbitmq, logger) {
+        // Support both positional and object arguments for robustness
+        if (typeof rabbitmq === 'object' && !rabbitmq.connect && rabbitmq.rabbitmq) {
+            const opts = rabbitmq;
+            rabbitmq = opts.rabbitmq;
+            logger = opts.logger;
+        }
+
         super();
 
         if (!rabbitmq) {
@@ -19,7 +26,7 @@ export class ConfirmChannelManager extends EventEmitter {
 
     async getChannel() {
         if (this._channel) {
-            return this.channel;
+            return this._channel;
         }
         if (this._connecting) {
             return new Promise((resolve, reject) => {
@@ -37,7 +44,7 @@ export class ConfirmChannelManager extends EventEmitter {
                 connection = this._rabbitmq.connection;
             } else {
                 await this._rabbitmq.connect();
-                if (!baseChannel?.connection) {
+                if (!this._rabbitmq.connection) {
                     throw new Error("Failed to connect RabbitMQ");
                 }
 
@@ -47,12 +54,11 @@ export class ConfirmChannelManager extends EventEmitter {
 
             confirmChannel.on("drain", () => this.emit("drain"));
             confirmChannel.on("error", (error) => {
-                (this._logger.error("[Channel Manager] confirm channel error"),
-                    {
-                        error: error.message,
-                        stack: error.stack,
-                        code: error.code,
-                    });
+                this._logger.error("[Channel Manager] confirm channel error", {
+                    error: error.message,
+                    stack: error.stack,
+                    code: error.code,
+                });
                 this._channel = null;
                 this.emit("error", error);
             });
@@ -62,10 +68,11 @@ export class ConfirmChannelManager extends EventEmitter {
 
             for (const w of this._connectWaiters) w.resolve(confirmChannel);
             this._connectWaiters = [];
+            return confirmChannel;
         } catch (error) {
             for (const w of this._connectWaiters) w.reject(error);
             this._connectWaiters = [];
-            return error;
+            throw error;
         } finally {
             this._connecting = false;
         }
