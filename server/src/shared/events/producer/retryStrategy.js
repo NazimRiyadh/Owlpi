@@ -25,7 +25,7 @@ export function isRetryable(err) {
     );
 }
 
-export class RetryStrategy {
+export default class RetryStrategy {
     constructor(opts = {}) {
         this.maxRetries = opts.maxRetries ?? 3;
         this.baseDelayMs = opts.baseDelayMs ?? 200;

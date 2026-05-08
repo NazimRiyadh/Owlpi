@@ -1,7 +1,7 @@
 import { EVENT_TYPES } from "../eventContracts.js";
-import { isRetryable } from "./retryStrategy.js";
+import { isRetryable } from "./retrystrategy.js";
 
-export class EventProducer {
+export default class EventProducer {
     constructor({
         channelManager,
         circuitBreaker,
@@ -32,12 +32,12 @@ export class EventProducer {
         this._shuttingDown = false;
     }
 
-    _incrementMatric(metric) {
+    _incrementMetric(metric) {
         this._metrics[metric] = (this._metrics[metric] || 0) + 1;
     }
 
     async _publish(eventData, { correlationId, attempt }) {
-        const channel = this._channelManager.getChannel();
+        const channel = await this._channelManager.getChannel();
 
         const message = {
             type: EVENT_TYPES.API_HIT,

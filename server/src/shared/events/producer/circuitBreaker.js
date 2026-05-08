@@ -4,7 +4,7 @@ export const circuitState = Object.freeze({
     HALF_OPEN: "HALF_OPEN",
 });
 
-export class CircuitBreaker {
+export default class CircuitBreaker {
     constructor(opts = {}) {
         this.failureThreshold = opts.failureThreshold || 5;
         this.coolDownMs = opts.coolDownMs || 10000;

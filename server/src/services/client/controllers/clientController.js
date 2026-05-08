@@ -1,6 +1,7 @@
 import ResponseFormat from "#src/shared/utils/responseFormat.js";
 
-export class ClientController {
+
+export default class ClientController {
     constructor(clientService, authService) {
         if (!clientService || !authService) {
             throw new Error("Service is required");
@@ -104,3 +105,5 @@ export class ClientController {
         }
     }
 }
+
+
