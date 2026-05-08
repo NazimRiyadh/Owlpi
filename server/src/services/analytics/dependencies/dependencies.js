@@ -1,7 +1,7 @@
 import mongoClientRepo from "#src/services/client/repositories/mongoClientRepo.js";
 import processorContainer from "#src/services/processor/dependencies/dependencies.js";
 import authContainer from "#src/services/auth/dependencies/authDependency.js";
-import AnalyticsService from "../service/analyticsService.js";
+import AnalyticsService from "../services/analyticsService.js";
 import { AnalyticsController } from "../controllers/analyticsController.js";
 
 class Container {
