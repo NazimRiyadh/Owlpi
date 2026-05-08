@@ -80,8 +80,8 @@ services:
             NODE_ENV: production
             PORT: 5000
             # MongoDB (local container)
-            MONGO_URI: mongodb://mongo:27017/api_monitoring
-            MONGO_DB_NAME: api_monitoring
+            MONGO_URI: mongodb://mongo:27017/api_monitoring_system
+            MONGO_DB_NAME: api_monitoring_system
             # PostgreSQL (Docker container)
             PG_HOST: postgres
             PG_PORT: 5432
@@ -114,6 +114,36 @@ services:
             interval: 30s
             timeout: 10s
             retries: 3
+
+    consumer:
+        build:
+            context: .
+            dockerfile: Dockerfile.consumer
+        container_name: api-monitoring-consumer
+        environment:
+            NODE_ENV: production
+            # MongoDB (local container)
+            MONGO_URI: mongodb://mongo:27017/api_monitoring_system
+            MONGO_DB_NAME: api_monitoring_system
+            # PostgreSQL (Docker container)
+            PG_HOST: postgres
+            PG_PORT: 5432
+            PG_DATABASE: api_monitoring_system
+            PG_USER: postgres
+            PG_PASSWORD: password
+            # RabbitMQ (Docker container)
+            RABBITMQ_URL: amqp://rabbitmq:password@rabbitmq:5672/api_monitoring_system
+            RABBITMQ_QUEUE: api_hits
+        volumes:
+            - ./logs:/app/logs
+        networks:
+            - api_monitoring_system
+        depends_on:
+            postgres:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
+        restart: unless-stopped
 
 volumes:
     postgres_data:

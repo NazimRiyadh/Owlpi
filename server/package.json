@@ -35,8 +35,10 @@
         "mongoose": "^9.6.1",
         "nodemon": "^3.1.14",
         "pg": "^8.20.0",
+        "rate-limit-express": "^2.2.2",
         "uuid": "^14.0.0",
-        "winston": "^3.19.0"
+        "winston": "^3.19.0",
+        "zod": "^4.4.3"
     },
     "devDependencies": {
         "@types/bcryptjs": "^2.4.6",

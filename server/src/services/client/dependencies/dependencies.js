@@ -1,5 +1,5 @@
 import MongoUserRepo from "#src/services/auth/repositories/userRepository.js";
-import { ClientController } from "../controllers/clientController.js";
+import ClientController from "../controllers/clientController.js";
 import mongoApiKeyRepository from "../repositories/mongoApiKeyRepository.js";
 import MongoClientRepo from "../repositories/mongoClientRepo.js";
 import ClientService from "../services/clientService.js";
@@ -21,7 +21,6 @@ class Container {
             }),
         };
 
-
         const controllers = {
             clientController: new ClientController(
                 services.clientService,
@@ -33,5 +32,4 @@ class Container {
 }
 
 const initialized = Container.init();
-export { Container };
-export default initialized;
+export default { initialized, Container };
