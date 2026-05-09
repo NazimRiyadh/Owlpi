@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import LandingPage from './components/Landing/LandingPage.jsx';
 import AuthPage from './components/Auth/AuthPage.jsx';
+import SetupAdminPage from './components/Auth/SetupAdminPage.jsx';
 import DashboardPage from './DashboardPage.jsx';
 import './index.css';
 
 function normalizeRoute(pathname) {
   if (pathname === '/auth') return '/auth';
   if (pathname === '/dashboard') return '/dashboard';
+  if (pathname === '/setup-admin') return '/setup-admin';
   return '/';
 }
 
@@ -65,6 +67,9 @@ function App() {
       <CustomCursor />
       {route === '/auth' && (
         <AuthPage onBack={navigateToHome} onAuthSuccess={navigateToDashboard} />
+      )}
+      {route === '/setup-admin' && (
+        <SetupAdminPage />
       )}
       {route === '/dashboard' && (
         <DashboardPage 

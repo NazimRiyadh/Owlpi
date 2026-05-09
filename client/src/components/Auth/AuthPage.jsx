@@ -259,7 +259,18 @@ export default function AuthPage({ onAuthSuccess, onBack }) {
               <p className="text-[7px] font-bold text-[#c5c0b1] uppercase tracking-[0.4em]">
                  Infrastructure Monitoring Node // Restricted Access
               </p>
-           </div>
+             {/* Initial Provisioning Link */}
+            <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+              <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-2">System_Status: Uninitialized?</p>
+              <a 
+                href="/setup-admin"
+                className="text-[10px] font-bold text-black hover:text-[#FF4F00] uppercase tracking-widest transition-colors flex items-center justify-center gap-2 group"
+              >
+                Run Setup Sequence
+                <div className="w-1 h-1 bg-[#FF4F00] rounded-full group-hover:animate-ping" />
+              </a>
+            </div>
+          </div>
         </div>
       </motion.div>
     </div>
