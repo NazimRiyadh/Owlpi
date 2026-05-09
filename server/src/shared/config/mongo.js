@@ -15,9 +15,10 @@ class MongoConnect {
                 return this.connection;
             }
 
-            await mongoose.connect(config.mongo.uri, {
-                dbName: config.mongo.dbName,
-            });
+            const maskedUri = config.mongo.uri ? `${config.mongo.uri.substring(0, 15)}...` : "UNDEFINED";
+            logger.info(`Attempting MongoDB connection with URI: ${maskedUri}`);
+
+            await mongoose.connect(config.mongo.uri);
 
             this.connection = mongoose.connection;
             this.isConnected = true;
