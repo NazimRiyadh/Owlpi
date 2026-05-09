@@ -20,19 +20,17 @@ const config = {
 
     // MOngodb
     mongo: {
-        uri:
-            process.env.MONGO_URI ||
-            "mongodb://localhost:27017/api_monitoring_system",
+        uri: process.env.MONGO_URI,
         dbName: process.env.MONGO_DB_NAME || "api_monitoring_system",
     },
 
     // postgreSQL
     postgres: {
-        host: process.env.PG_HOST || "localhost",
+        host: process.env.PG_HOST,
         port: readInt(process.env.PG_PORT, 5432),
-        database: process.env.PG_DATABASE || "api_monitoring",
-        user: process.env.PG_USER || "postgres",
-        password: process.env.PG_PASSWORD || "postgres",
+        database: process.env.PG_DATABASE,
+        user: process.env.PG_USER,
+        password: process.env.PG_PASSWORD,
     },
 
     // RabbitMQ
