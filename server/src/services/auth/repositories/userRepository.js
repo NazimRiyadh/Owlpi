@@ -58,6 +58,15 @@ class MongoUserRepository extends BaseRepository {
         }
     }
 
+    async findSuperAdmin() {
+        try {
+            return await this.model.findOne({ role: "super_admin" });
+        } catch (error) {
+            logger.error("Error finding super admin", error);
+            throw error;
+        }
+    }
+
     async findAll() {
         try {
             const user = await this.model
