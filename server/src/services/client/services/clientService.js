@@ -65,10 +65,16 @@ class ClientService {
 
     async createClient(clientData, adminData) {
         try {
-            const { name, email, description, website } = clientData;
+            const {
+                name,
+                email,
+                description,
+                website,
+                adminUsername,
+                adminPassword,
+            } = clientData;
 
             const slug = this.generateSlug(name);
-
             const existClient = await this.clientRepository.findBySlug(slug);
 
             if (existClient) {
@@ -83,8 +89,51 @@ class ClientService {
                 website,
                 createdBy: adminData.userId,
             });
+
+            // Create initial client admin
+            if (adminUsername && adminPassword) {
+                await this.createClientUser(
+                    client._id,
+                    {
+                        username: adminUsername,
+                        email: email, // Use client contact email as admin email
+                        password: adminPassword,
+                        role: APPLICATION_ROLES.CLIENT_ADMIN,
+                    },
+                    adminData,
+                );
+            }
+
             return client;
         } catch (error) {
+            throw error;
+        }
+    }
+
+    async getAllClients(adminUser) {
+        try {
+            if (adminUser.role !== APPLICATION_ROLES.SUPER_ADMIN) {
+                throw new AppError("Access denied", 403);
+            }
+            return await this.clientRepository.find();
+        } catch (error) {
+            logger.error("Error getting all clients", error);
+            throw error;
+        }
+    }
+
+    async getClientUsers(clientId, adminUser) {
+        try {
+            if (!this.canUserAccessClient(adminUser, clientId)) {
+                throw new AppError("Access denied", 403);
+            }
+
+            const users = await this.userRepository.model
+                .find({ clientId })
+                .select("-password");
+            return users;
+        } catch (error) {
+            logger.error("Error getting client users", error);
             throw error;
         }
     }
@@ -118,17 +167,15 @@ class ClientService {
             }
 
             // Prevent privilege escalation
-            // A Client Viewer should not be able to create a Client Admin
-            if (role === APPLICATION_ROLES.CLIENT_ADMIN) {
-                if (
-                    adminUser.role !== APPLICATION_ROLES.SUPER_ADMIN &&
-                    adminUser.role !== APPLICATION_ROLES.CLIENT_ADMIN
-                ) {
-                    throw new AppError(
-                        "You are not authorized to create a Client Admin user",
-                        403,
-                    );
-                }
+            // Only Super Admins can create new Client Admins
+            if (
+                role === APPLICATION_ROLES.CLIENT_ADMIN &&
+                adminUser.role !== APPLICATION_ROLES.SUPER_ADMIN
+            ) {
+                throw new AppError(
+                    "Only Super Administrators can create Client Admin users",
+                    403,
+                );
             }
 
             const client = await this.clientRepository.findById(clientId);
@@ -232,8 +279,10 @@ class ClientService {
                 await this.apiKeyRepository.findByClientId(clientId);
 
             const formattedResponse = apiKeys.map((key) => {
-                const keyObj = key.toObject ? key.toObject() : key;
-                delete keyObj.keyValue;
+                const keyObj = key.toObject
+                    ? key.toObject({ virtuals: true })
+                    : { ...key };
+
                 return keyObj;
             });
 

@@ -149,7 +149,7 @@ export class AnalyticsController {
             const result = await Promise.allSettled([
                 this.analyticsService.getOverallStats(finalClientId, timeRange),
                 this.analyticsService.getTopEndpoints(finalClientId, {
-                    limit: 5,
+                    limit: 50,
                     startTime: timeRange.startTime,
                 }),
                 this.analyticsService.getTimeSeries(finalClientId, {

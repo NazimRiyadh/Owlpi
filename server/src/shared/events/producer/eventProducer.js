@@ -1,5 +1,5 @@
 import { EVENT_TYPES } from "../eventContracts.js";
-import { isRetryable } from "./retrystrategy.js";
+import { isRetryable } from "./retryStrategy.js";
 
 export default class EventProducer {
     constructor({

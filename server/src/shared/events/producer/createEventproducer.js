@@ -2,10 +2,10 @@ import config from "#src/shared/config/index.js";
 import logger from "#src/shared/config/logger.js";
 import rabbitmq from "#src/shared/config/rabbitmq.js";
 
-import CircuitBreaker from "./circuitbreaker.js";
-import ConfirmChannelManager from "./confirmchannelmanager.js";
-import RetryStrategy from "./retrystrategy.js";
-import EventProducer from "./eventproducer.js";
+import CircuitBreaker from "./circuitBreaker.js";
+import ConfirmChannelManager from "./confirmChannelmanager.js";
+import RetryStrategy from "./retryStrategy.js";
+import EventProducer from "./eventProducer.js";
 
 function createEventProducer(overrides = {}) {
     const log = overrides.logger ?? logger;

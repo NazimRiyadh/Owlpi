@@ -1,0 +1,196 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  /* Colors from DESIGN.md */
+  --color-background: #fffefb; /* Cream White */
+  --color-foreground: #201515; /* Zapier Black */
+  
+  --color-primary: #ff4f00; /* Zapier Orange */
+  --color-primary-foreground: #fffefb;
+  
+  --color-secondary: #eceae3; /* Light Sand */
+  --color-secondary-foreground: #201515;
+  
+  --color-muted: #eceae3;
+  --color-muted-foreground: #939084; /* Warm Gray */
+  
+  --color-accent: #eceae3;
+  --color-accent-foreground: #201515;
+  
+  --color-border: #c5c0b1; /* Sand */
+  --color-input: #c5c0b1;
+  --color-ring: #ff4f00;
+  
+  --color-card: #fffefb;
+  --color-card-foreground: #201515;
+  
+  --color-popover: #fffefb;
+  --color-popover-foreground: #201515;
+
+  /* Custom Zapier Palette */
+  --color-zapier-orange: #ff4f00;
+  --color-zapier-black: #201515;
+  --color-zapier-white: #fffefb;
+  --color-zapier-cream: #fffdf9;
+  --color-zapier-sand: #c5c0b1;
+  --color-zapier-charcoal: #36342e;
+  --color-zapier-gray-warm: #939084;
+  --color-zapier-gray-light: #eceae3;
+
+  /* Typography from DESIGN.md */
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Outfit", "Inter", system-ui, sans-serif; /* Outfit as proxy for Degular */
+  --font-serif: "GT Alpina", serif;
+
+  /* Spacing & Radius */
+  --radius-sm: 4px;
+  --radius-md: 5px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+  
+  /* Line Heights */
+  --leading-hero: 0.90;
+  --leading-tight: 1.10;
+  --leading-relaxed: 1.5;
+
+  /* Shadows from DESIGN.md */
+  --shadow-active-tab: inset 0 -4px 0 0 #ff4f00;
+  --shadow-hover-tab: inset 0 -4px 0 0 #c5c0b1;
+}
+
+@layer base {
+  :root {
+    /* HSL parts for legacy hsl(var(--...)) compatibility */
+    --background: 40 100% 99.6%;
+    --foreground: 0 20% 10.4%;
+    --primary: 18.6 100% 50%;
+    --primary-foreground: 40 100% 99.6%;
+    --secondary: 46.7 15.6% 91.2%;
+    --secondary-foreground: 0 20% 10.4%;
+    --muted: 46.7 15.6% 91.2%;
+    --muted-foreground: 46.7 7% 54.7%;
+    --accent: 46.7 15.6% 91.2%;
+    --accent-foreground: 0 20% 10.4%;
+    --border: 44.4 13.1% 72.9%;
+    --input: 44.4 13.1% 72.9%;
+    --ring: 18.6 100% 50%;
+    --radius: 5px;
+
+    /* Hex versions for direct var() usage */
+    --zapier-orange: #ff4f00;
+    --zapier-black: #201515;
+    --zapier-cream: #fffefb;
+    --zapier-sand: #c5c0b1;
+    --zapier-charcoal: #36342e;
+  }
+
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    line-height: var(--leading-relaxed);
+    background-color: #fffefb; /* Hardcode to ensure cream background */
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    line-height: var(--leading-hero);
+    color: var(--color-zapier-black);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 10px;
+}
+
+/* Chart container fix */
+.chart-wrapper {
+  height: 350px !important;
+  width: 100%;
+}
+
+/* Premium Cursor */
+.custom-cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition: transform 0.15s ease-out, background-color 0.3s ease;
+  transform: translate(-50%, -50%);
+}
+.custom-cursor.hovering {
+  transform: translate(-50%, -50%) scale(2.5);
+  background: white;
+}
+.custom-cursor.clicking {
+  transform: translate(-50%, -50%) scale(0.8);
+}
+
+/* Grid Background */
+.bg-grid-pattern {
+  background-image: radial-gradient(circle at 1px 1px, var(--color-border) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Bento Grid System */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(160px, auto);
+  gap: 1.5rem;
+}
+
+.bento-item {
+  @apply bg-background border border-border rounded-2xl p-6 transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5;
+}
+
+.bento-item-large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.bento-item-wide {
+  grid-column: span 2;
+}
+
+.bento-item-tall {
+  grid-row: span 2;
+}
+
+@media (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Form layouts */
+.settings-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}

@@ -43,11 +43,13 @@ class AnalyticsService {
 
     async getTopEndpoints(clientId, options = {}) {
         try {
-            const { limit = 10, startTime = null } = options;
+            const { limit = 10 } = options;
+            const { startTime, endTime } = this.parseTimeFilters(options);
             const endpoints = await this.metricsRepo.getTopEndpoints(
                 clientId,
                 limit,
                 startTime,
+                endTime,
             );
 
             return endpoints.map((e) => ({
@@ -66,9 +68,12 @@ class AnalyticsService {
 
     async getTimeSeries(clientId, options = {}) {
         try {
+            const { startTime, endTime } = this.parseTimeFilters(options);
             const metrics = await this.metricsRepo.getMetrics({
                 clientId,
                 ...options,
+                startTime,
+                endTime,
             });
 
             return metrics.map((m) => ({
@@ -88,18 +93,24 @@ class AnalyticsService {
 
     parseTimeFilters(filters = {}) {
         let { startTime, endTime } = filters;
-        if (!startTime) {
-            startTime = new Date();
-            startTime.setHours(startTime.getHours() - 24);
-        }
 
-        if (!endTime) {
-            endTime = new Date();
-        }
+        const toDate = (v) => {
+            if (v instanceof Date) return v;
+            if (!v) return null;
+            // Handle numeric strings (milliseconds)
+            if (typeof v === "string" && /^\d+$/.test(v)) {
+                return new Date(Number(v));
+            }
+            return new Date(v);
+        };
+
+        const start = toDate(startTime);
+        const end = toDate(endTime);
+
+        const now = new Date();
         return {
-            startTime:
-                startTime instanceof Date ? startTime : new Date(startTime),
-            endTime: endTime instanceof Date ? endTime : new Date(endTime),
+            startTime: start && !isNaN(start) ? start : new Date(now.getTime() - 24 * 60 * 60 * 1000),
+            endTime: end && !isNaN(end) ? end : now,
         };
     }
 }

@@ -74,7 +74,7 @@ export class MetricsRepository extends BaseRepository {
             const safeLimit = Math.min(Math.max(1, limit), MAX_LIMIT);
             const safeOffset = Math.max(0, offset);
 
-            const query = `
+            let query = `
             SELECT
                 service_name,
                 endpoint,
@@ -144,7 +144,7 @@ export class MetricsRepository extends BaseRepository {
         }
     }
 
-    async getTopEndpoints(clientId, limit = 10, startTime = null) {
+    async getTopEndpoints(clientId, limit = 10, startTime = null, endTime = null) {
         try {
             const safeLimit = Math.min(Math.max(1, limit), MAX_LIMIT);
 
@@ -175,9 +175,16 @@ export class MetricsRepository extends BaseRepository {
                 paramIndex++;
             }
 
+            if (endTime) {
+                query += (clientId != null || startTime) ? ` AND` : ` WHERE`;
+                query += ` time_bucket <= $${paramIndex}`;
+                params.push(endTime);
+                paramIndex++;
+            }
+
             query += `
         GROUP BY service_name, endpoint, method
-        ORDER BY total_hits DESC
+        ORDER BY SUM(total_hits) DESC
         LIMIT $${paramIndex}
       `;
             params.push(safeLimit);

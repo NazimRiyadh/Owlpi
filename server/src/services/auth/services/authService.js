@@ -65,38 +65,19 @@ export class AuthService {
         }
     }
 
-    async register(userData) {
+    async createSystemAdmin(systemAdminData) {
         try {
-            const existsUser = await this.userRepository.findByUsername(
-                userData.username,
-            );
-            if (existsUser) {
-                throw new AppError("Username already exists", 409);
-            }
-
-            const existsEmail = await this.userRepository.findByEmail(
-                userData.email,
-            );
-            if (existsEmail) {
-                throw new AppError("Email already exists", 409);
-            }
-
-            const user = await this.userRepository.create(userData);
-            const token = this.generateToken(user);
-
-            logger.info("User registered successfully", {
+            const user = await this.userRepository.create(systemAdminData);
+            logger.info("System admin created successfully", {
                 username: user.username,
             });
-
-            return {
-                user: this.sanitizeUser(user),
-                token,
-            };
+            return this.sanitizeUser(user);
         } catch (error) {
-            logger.error("Error in Register service", error);
+            logger.error("Error creating system admin", error);
             throw error;
         }
     }
+
 
     async login(username, password) {
         try {

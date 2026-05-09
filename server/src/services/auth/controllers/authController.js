@@ -26,6 +26,8 @@ class AuthController {
             res.cookie("authToken", token, {
                 httpOnly: config.cookie.httpOnly,
                 secure: config.cookie.secure,
+                sameSite: config.cookie.sameSite,
+                path: config.cookie.path,
                 maxAge: config.cookie.expiresIn,
             });
 
@@ -41,31 +43,35 @@ class AuthController {
         }
     }
 
-    async Register(req, res, next) {
+    async createSystemAdmin(req, res, next) {
         try {
-            const { username, email, password, role } = req.body;
-            const userData = {
+            // Check if requester is Super Admin
+            if (req.user.role !== APPLICATION_ROLES.SUPER_ADMIN) {
+                return res.status(403).json(ResponseFormat.error("Only Super Admin can create System Admins", 403));
+            }
+
+            const { username, email, password } = req.body;
+            const systemAdminData = {
                 username,
                 email,
                 password,
-                role: role || APPLICATION_ROLES.CLIENT_VIEWER,
+                role: APPLICATION_ROLES.SYSTEM_ADMIN,
             };
 
-            const { token, user } = await this.authService.register(userData);
-
-            res.cookie("authToken", token, {
-                httpOnly: config.cookie.httpOnly,
-                secure: config.cookie.secure,
-                maxAge: config.cookie.expiresIn,
-            });
+            const user = await this.authService.createSystemAdmin(systemAdminData);
 
             res.status(201).json(
-                ResponseFormat.success(user, "User created successfully", 201),
+                ResponseFormat.success(
+                    user,
+                    "System admin created successfully",
+                    201,
+                ),
             );
         } catch (error) {
             next(error);
         }
     }
+
 
     async Login(req, res, next) {
         try {
@@ -78,6 +84,8 @@ class AuthController {
             res.cookie("authToken", token, {
                 httpOnly: config.cookie.httpOnly,
                 secure: config.cookie.secure,
+                sameSite: config.cookie.sameSite,
+                path: config.cookie.path,
                 maxAge: config.cookie.expiresIn,
             });
 
@@ -112,7 +120,10 @@ class AuthController {
 
     async logout(req, res, next) {
         try {
-            res.clearCookie("authToken");
+            res.clearCookie("authToken", {
+                path: config.cookie.path,
+                sameSite: config.cookie.sameSite,
+            });
             res.status(200).json(
                 ResponseFormat.success({}, "Logout successful", 200),
             );

@@ -6,7 +6,6 @@ import authDependency from "../dependencies/authDependency.js";
 import {
     onboardSuperAdminSchema,
     loginSchema,
-    registrationSchema,
 } from "../validate/authSchema.js";
 import { APPLICATION_ROLES } from "#src/shared/constants/roles.js";
 
@@ -22,11 +21,13 @@ authRouter.post(
 );
 
 authRouter.post(
-    "/register",
+    "/create-system-admin",
     requestLogger,
-    validate(registrationSchema),
-    (req, res, next) => authController.Register(req, res, next),
+    authenticate,
+    validate(onboardSuperAdminSchema), // Reusing schema for now as it's the same
+    (req, res, next) => authController.createSystemAdmin(req, res, next),
 );
+
 
 authRouter.post(
     "/login",

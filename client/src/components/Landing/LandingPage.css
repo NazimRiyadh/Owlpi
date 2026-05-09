@@ -1,0 +1,151 @@
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: inline-flex;
+  animation: marquee 60s linear infinite;
+}
+
+/* Base Themes from DESIGN.md */
+.bg-zapier-cream {
+  background-color: #fffefb;
+}
+
+.text-zapier-black {
+  color: #201515;
+}
+
+.text-zapier-charcoal {
+  color: #36342e;
+}
+
+.text-zapier-orange {
+  color: #ff4f00;
+}
+
+.border-zapier-sand {
+  border: 1px solid #c5c0b1;
+}
+
+/* Typography from DESIGN.md */
+.font-display {
+  font-family: "Outfit", "Inter", system-ui, sans-serif;
+}
+
+.font-sans {
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.leading-hero {
+  line-height: 0.90;
+}
+
+.leading-tight-custom {
+  line-height: 1.10;
+}
+
+.leading-relaxed-custom {
+  line-height: 1.25;
+}
+
+/* Components from DESIGN.md */
+.btn-primary-orange {
+  background-color: #ff4f00;
+  color: #fffefb;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid #ff4f00;
+  font-weight: 600;
+  font-size: 16px;
+  transition: filter 0.2s ease;
+}
+
+.btn-primary-orange:hover {
+  filter: brightness(1.1);
+}
+
+.btn-primary-dark {
+  background-color: #201515;
+  color: #fffefb;
+  padding: 20px 24px;
+  border-radius: 8px;
+  border: 1px solid #201515;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary-dark:hover {
+  background-color: #c5c0b1;
+  color: #201515;
+  border-color: #c5c0b1;
+}
+
+.zapier-card {
+  background-color: #fffefb;
+  border: 1px solid #c5c0b1;
+  border-radius: 5px;
+  transition: border-color 0.2s ease;
+}
+
+.zapier-card:hover {
+  border-color: #ff4f00;
+}
+
+.tab-active-indicator {
+  box-shadow: #ff4f00 0px -4px 0px 0px inset;
+}
+
+.tab-hover-indicator:hover {
+  box-shadow: #c5c0b1 0px -4px 0px 0px inset;
+}
+
+.section-label-upper {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #201515;
+}
+
+/* Technical Blueprint Utilities */
+.bg-technical-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 79, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 79, 0, 0.05) 1px, transparent 1px);
+}
+
+.perspective-3000 {
+  perspective: 3000px;
+}
+
+.perspective-2000 {
+  perspective: 2000px;
+}
+
+.shadow-premium-xl {
+  box-shadow: 0 40px 100px -20px rgba(0,0,0,0.1), 0 20px 40px -10px rgba(0,0,0,0.05);
+}
+
+.shadow-premium-lg {
+  box-shadow: 0 20px 50px -10px rgba(0,0,0,0.05);
+}
+
+/* Animations */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 4s infinite ease-in-out;
+}
+
+/* Custom Selection */
+::selection {
+  background: rgba(255, 79, 0, 0.1);
+  color: #201515;
+}

@@ -6,10 +6,10 @@ import config from "#src/shared/config/index.js";
 import logger from "#src/shared/config/logger.js";
 import processorContainer from "./dependencies/dependencies.js";
 import { EVENT_TYPES } from "#src/shared/events/eventContracts.js";
-import CircuitBreaker from "#src/shared/events/producer/circuitbreaker.js";
+import CircuitBreaker from "#src/shared/events/producer/circuitBreaker.js";
 import RetryStrategy, {
     isRetryable,
-} from "#src/shared/events/producer/retrystrategy.js";
+} from "#src/shared/events/producer/retryStrategy.js";
 const messageSchema = z.object({
     type: z.enum([EVENT_TYPES.API_HIT]),
     data: z.record(z.string(), z.unknown()),

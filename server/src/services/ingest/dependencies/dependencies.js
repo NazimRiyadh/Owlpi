@@ -1,5 +1,5 @@
 import authContainer from "#src/services/auth/dependencies/authDependency.js";
-import createEventProducer from "#src/shared/events/producer/createeventproducer.js";
+import createEventProducer from "#src/shared/events/producer/createEventproducer.js";
 import IngestController from "../controllers/ingestController.js";
 import { IngestService } from "../services/ingestService.js";
 

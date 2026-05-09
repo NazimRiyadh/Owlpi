@@ -12,6 +12,14 @@ export const createClientSchema = {
     description: {
         required: false,
     },
+    adminUsername: {
+        required: true,
+        minLength: 5,
+    },
+    adminPassword: {
+        required: true,
+        minLength: 8,
+    },
 };
 export const createUserSchema = {
     username: {

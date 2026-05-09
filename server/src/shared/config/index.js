@@ -46,7 +46,11 @@ const config = {
     },
 
     jwt: {
-        secret: process.env.JWT_SECRET,
+        secret:
+            process.env.JWT_SECRET ||
+            (process.env.NODE_ENV === "production"
+                ? undefined
+                : "owlpi-dev-jwt-secret-change-me"),
         expiresIn: process.env.JWT_EXPIRES_IN || "24h",
     },
 
@@ -59,8 +63,14 @@ const config = {
     cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
         expiresIn: 24 * 60 * 60 * 1000,
     },
 };
+
+if (config.node_env === "production" && !process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is required in production");
+}
 
 export default config;

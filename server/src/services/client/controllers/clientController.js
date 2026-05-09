@@ -104,6 +104,44 @@ export default class ClientController {
             next(error);
         }
     }
+
+    async getAllClients(req, res, next) {
+        try {
+            const clients = await this.clientService.getAllClients(req.user);
+            return res
+                .status(200)
+                .json(
+                    ResponseFormat.success(
+                        clients,
+                        "Clients fetched successfully",
+                        200,
+                    ),
+                );
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getClientUsers(req, res, next) {
+        try {
+            const { clientId } = req.params;
+            const users = await this.clientService.getClientUsers(
+                clientId,
+                req.user,
+            );
+            return res
+                .status(200)
+                .json(
+                    ResponseFormat.success(
+                        users,
+                        "Users fetched successfully",
+                        200,
+                    ),
+                );
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 
