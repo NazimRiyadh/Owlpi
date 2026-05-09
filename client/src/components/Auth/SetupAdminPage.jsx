@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, ArrowRight, User, Mail, Lock, CheckCircle2 } from 'lucide-react';
-import api from '../../api';
+import { apiRequest } from '../../api';
 
 export default function SetupAdminPage() {
   const [formData, setFormData] = useState({
@@ -25,13 +25,16 @@ export default function SetupAdminPage() {
 
     setLoading(true);
     try {
-      const response = await api.post('/auth/onboard-super-admin', {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password
+      const response = await apiRequest('/api/auth/onboard-super-admin', {
+        method: 'POST',
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        })
       });
 
-      if (response.data.success) {
+      if (response.success) {
         setSuccess(true);
       }
     } catch (err) {
