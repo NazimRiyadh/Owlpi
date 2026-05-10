@@ -4,6 +4,9 @@ export async function apiRequest(path, options = {}) {
   let response;
   const savedUser = JSON.parse(localStorage.getItem('owlpi_user') || 'null');
   const token = savedUser?.token;
+  
+  if (token) console.log('DEBUG: Sending token in header');
+  else console.warn('DEBUG: No token found in localStorage!');
 
   try {
     response = await fetch(`${API_BASE}${path}`, {

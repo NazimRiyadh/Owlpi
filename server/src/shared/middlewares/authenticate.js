@@ -7,15 +7,22 @@ const authenticate = async (req, res, next) => {
     try {
         let token = null;
 
-        if (req.cookies && req.cookies.authToken) {
-            token = req.cookies.authToken;
+        logger.info("DEBUG: Auth attempt", {
+            hasHeader: !!req.headers.authorization,
+            hasCookie: !!(req.cookies && req.cookies.authToken),
+            path: req.path
+        });
+
+        // 1. Check Authorization Header (Highest Priority for Cross-Domain)
+        if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+            token = req.headers.authorization.split(" ")[1];
+            logger.info("DEBUG: Token found in Header");
         }
 
-        if (!token && req.headers.authorization) {
-            const authHeader = req.headers.authorization;
-            if (authHeader.startsWith("Bearer ")) {
-                token = authHeader.split(" ")[1];
-            }
+        // 2. Fallback to Cookie (If no header is present)
+        if (!token && req.cookies && req.cookies.authToken) {
+            token = req.cookies.authToken;
+            logger.info("DEBUG: Token found in Cookie");
         }
 
         if (!token) {
