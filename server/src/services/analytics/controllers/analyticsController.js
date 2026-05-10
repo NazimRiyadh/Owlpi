@@ -135,6 +135,18 @@ export class AnalyticsController {
         return typeof id === "string" && /^[0-9a-fA-F]{24}$/.test(id);
     }
 
+    async getRecentHits(req, res, next) {
+        try {
+            const { ip, endpoint } = req.query;
+            const clientId = req.user.role === 'super_admin' ? null : req.user.clientId;
+            const hits = await this.analyticsService.getRecentHits(clientId, { ip, endpoint });
+            
+            res.status(200).json(ResponseFormat.success(hits));
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getDashboard(req, res, next) {
         try {
             const { startTime, endTime } = req.query;

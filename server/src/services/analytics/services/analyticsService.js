@@ -1,9 +1,10 @@
 import logger from "#src/shared/config/logger.js";
 
 class AnalyticsService {
-    constructor(metricsRepo) {
+    constructor(metricsRepo, apiHitRepo) {
         if (!metricsRepo) throw new Error("Metrics repository is required");
         this.metricsRepo = metricsRepo;
+        this.apiHitRepo = apiHitRepo;
     }
 
     async getOverallStats(clientId, filters = {}) {
@@ -62,6 +63,31 @@ class AnalyticsService {
             }));
         } catch (error) {
             logger.error("Error getting top endpoints:", error);
+            throw error;
+        }
+    }
+
+    async getRecentHits(clientId, filters = {}, limit = 50) {
+        try {
+            const query = { clientId };
+            
+            if (filters.ip) {
+                query.ip = filters.ip;
+            }
+            
+            if (filters.endpoint) {
+                query.endpoint = { $regex: filters.endpoint, $options: 'i' }; // Case-insensitive search
+            }
+
+            // Fetch from MongoDB
+            const hits = await this.apiHitRepo.find(query, { 
+                sort: { timestamp: -1 }, 
+                limit 
+            });
+            
+            return hits;
+        } catch (error) {
+            logger.error("Error getting recent hits:", error);
             throw error;
         }
     }

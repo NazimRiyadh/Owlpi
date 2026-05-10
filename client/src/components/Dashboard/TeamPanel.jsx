@@ -187,8 +187,10 @@ export default function TeamPanel({ profile }) {
           <div className="bg-[#fffefb] border border-[#c5c0b1] rounded-[5px] p-3 flex items-center gap-4 overflow-x-auto">
              <span className="text-[8px] font-bold text-[#939084] uppercase tracking-widest whitespace-nowrap">Selected Organization:</span>
              <div className="flex items-center gap-2">
-                {clients.map(client => {
-                  const isSelected = (selectedClient?._id === client._id || selectedClient?.id === client.id);
+                 {clients.map(client => {
+                  const clientId = client._id || client.id;
+                  const selectedId = selectedClient?._id || selectedClient?.id;
+                  const isSelected = selectedId && clientId === selectedId;
                   return (
                     <button 
                       key={client._id || client.id}
@@ -196,7 +198,7 @@ export default function TeamPanel({ profile }) {
                       className={cn(
                         "px-2.5 py-1 rounded-[4px] border text-[10px] font-bold uppercase transition-all whitespace-nowrap",
                         isSelected 
-                          ? "bg-[#201515] text-white border-[#201515]" 
+                          ? "bg-[#ff4f00] text-white border-[#ff4f00] shadow-[0_2px_10px_rgba(255,79,0,0.2)]" 
                           : "bg-white text-[#201515] border-[#c5c0b1] hover:text-[#ff4f00] hover:border-[#ff4f00]"
                       )}
                     >
@@ -212,19 +214,24 @@ export default function TeamPanel({ profile }) {
           <div className="space-y-4">
             {/* Search & Filter Command Bar */}
             <div className="flex flex-col md:flex-row gap-3">
-              <div className="relative flex-1 group">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#939084] group-focus-within:text-[#ff4f00] transition-colors" />
-                <Input 
-                  placeholder="Search by name or email..." 
-                  className="pl-9 bg-transparent border-[#c5c0b1] focus-visible:ring-[#ff4f00] h-9 text-xs rounded-[4px]"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                {searchTerm && (
-                  <button onClick={() => setSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#939084] hover:text-[#201515]">
-                    <X size={12} />
-                  </button>
-                )}
+              <div className="flex flex-1 gap-2">
+                <div className="relative flex-1 group">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#939084] group-focus-within:text-[#ff4f00] transition-colors" />
+                  <Input 
+                    placeholder="Search by name or email..." 
+                    className="pl-9 bg-transparent border-[#c5c0b1] focus-visible:ring-[#ff4f00] h-9 text-xs rounded-[4px]"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  {searchTerm && (
+                    <button onClick={() => setSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#939084] hover:text-[#201515]">
+                      <X size={12} />
+                    </button>
+                  )}
+                </div>
+                <Button variant="zapier" className="h-9 px-4 text-[10px] uppercase font-bold tracking-tight rounded-[4px]">
+                   Find Member
+                </Button>
               </div>
               <div className="flex items-center gap-2 bg-[#fffefb] border border-[#c5c0b1] rounded-[4px] p-1 h-9">
                  <button 

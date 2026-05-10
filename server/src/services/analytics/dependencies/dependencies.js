@@ -9,11 +9,13 @@ class Container {
         const repositories = {
             clientRepository: mongoClientRepo,
             metricsRepository: processorContainer.repositories.metricsRepository,
+            apiHitRepository: processorContainer.repositories.apiHitRepository,
         };
 
         const services = {
             analyticsService: new AnalyticsService(
                 repositories.metricsRepository,
+                repositories.apiHitRepository,
             ),
         };
 

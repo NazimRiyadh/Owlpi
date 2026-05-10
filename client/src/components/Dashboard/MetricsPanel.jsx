@@ -11,7 +11,7 @@ import {
   Search
 } from 'lucide-react';
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line
 } from 'recharts';
 import { formatNumber, formatPercent, formatLatency, bucketHitsByTime } from '../../utils.js';
@@ -28,10 +28,12 @@ const CustomTooltip = ({ active, payload, label }) => {
       <div className="bg-[#fffefb] border border-[#c5c0b1] shadow-none p-3 rounded-[4px] text-xs">
         <p className="font-bold text-[#201515] mb-2">{label}</p>
         {payload.map((p, i) => (
-           <div key={i} className="flex items-center gap-2">
-             <div className="w-1.5 h-1.5 rounded-full" style={{ background: p.color }} />
-             <span className="font-semibold text-[#201515]">{formatNumber(p.value)}</span>
-             <span className="text-[#939084] text-[10px] uppercase tracking-wider">{p.name === 'hits' ? 'Hits' : 'Value'}</span>
+           <div key={i} className="flex items-center justify-between gap-4 mb-1 last:mb-0">
+             <div className="flex items-center gap-2">
+               <div className="w-1.5 h-1.5 rounded-full" style={{ background: p.color }} />
+               <span className="text-[#939084] text-[10px] uppercase tracking-wider">{p.name}</span>
+             </div>
+             <span className="font-bold text-[#201515]">{formatNumber(p.value)}</span>
            </div>
         ))}
       </div>
@@ -124,13 +126,7 @@ export default function MetricsPanel({ data }) {
         </div>
         <div className="p-6 h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={series} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#ff4f00" stopOpacity={0.08}/>
-                  <stop offset="95%" stopColor="#ff4f00" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
+            <BarChart data={series} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} barGap={0}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eceae3" />
               <XAxis 
                 dataKey="time" 
@@ -144,18 +140,24 @@ export default function MetricsPanel({ data }) {
                 tickLine={false} 
                 tick={{ fontSize: 10, fontWeight: 'bold', fill: '#939084' }}
               />
-              <RechartsTooltip content={<CustomTooltip />} />
-              <Area 
-                type="stepAfter" 
+              <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: '#fcfcfc' }} />
+              <Bar 
                 dataKey="hits" 
-                stroke="#ff4f00" 
-                strokeWidth={2.5} 
-                fillOpacity={1} 
-                fill="url(#chartGradient)" 
-                dot={false}
-                activeDot={{ r: 4, fill: '#ff4f00', strokeWidth: 0 }}
+                name="Total Hits"
+                stackId="a" 
+                fill="#ff4f00" 
+                radius={[0, 0, 0, 0]}
+                barSize={20}
               />
-            </AreaChart>
+              <Bar 
+                dataKey="errors" 
+                name="Errors"
+                stackId="a" 
+                fill="#ef4444" 
+                radius={[2, 2, 0, 0]}
+                barSize={20}
+              />
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </div>

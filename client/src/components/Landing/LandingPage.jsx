@@ -23,6 +23,7 @@ import {
   Circle,
   Square,
   Shapes,
+  Copy,
   Code,
   Network,
   Server,
@@ -261,7 +262,7 @@ const PricingSection = ({ onRequestAccess }) => {
   return (
     <div id="pricing" className="max-w-[1600px] mx-auto px-10 py-20 flex flex-col justify-center min-h-screen">
       <div className="text-center mb-16">
-        <SectionLabel number="04" title="Pricing Tiers" />
+        <SectionLabel number="05" title="Pricing Tiers" />
         <h2 className="text-[40px] lg:text-[72px] font-bold tracking-tighter text-[#201515] uppercase leading-[0.85]">
           Built for <span className="text-[#ff4f00]">Velocity.</span><br />
           <span className="text-[#939084]">Scalable for Growth.</span>
@@ -571,6 +572,7 @@ const InfrastructureWalkthrough = () => {
 export default function LandingPage({ onSignIn, onLiveDemo }) {
   const [scrolled, setScrolled] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [activeDocTab, setActiveDocTab] = useState('universal');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -763,6 +765,213 @@ export default function LandingPage({ onSignIn, onLiveDemo }) {
       {/* Infrastructure Walkthrough */}
       <section className="bg-[#fffefb] relative z-10 border-t border-[#c5c0b1]/30">
          <InfrastructureWalkthrough />
+      </section>
+
+      {/* Technical Blueprint Portal (UPGRADED) */}
+      <section id="docs" className="px-10 py-32 bg-[#fffefb] relative z-10 border-t border-[#c5c0b1]/30">
+         <div className="max-w-[1400px] mx-auto">
+            <div className="flex flex-col gap-4 mb-20 border-l-2 border-[#ff4f00] pl-6">
+               <span className="text-[10px] font-black text-[#ff4f00] uppercase tracking-[0.4em]">Universal Ingestion Protocol v1.2</span>
+               <h2 className="text-[40px] lg:text-[64px] font-bold tracking-tighter text-[#201515] uppercase leading-none">
+                  Agnostic <span className="text-[#939084]">Integration.</span>
+               </h2>
+               <p className="text-[14px] text-[#939084] font-medium max-w-xl leading-relaxed">
+                  Owlpi is language-independent. Whether your system is built in Node, Go, Python, or Rust, our protocol speaks the universal language of HTTP.
+               </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-[#fffefb] border border-[#c5c0b1] rounded-[4px] shadow-sm overflow-hidden min-h-[600px]">
+               {/* Documentation Sidebar */}
+               <div className="lg:col-span-3 border-r border-[#c5c0b1] bg-[#fcfcfc]/50 p-0">
+                  <div className="p-6 border-b border-[#c5c0b1]">
+                     <span className="text-[9px] font-bold text-[#939084] uppercase tracking-widest">Protocol Stacks</span>
+                  </div>
+                  <nav className="flex flex-col">
+                     {[
+                        { id: 'universal', t: 'Universal (REST API)', d: 'Any Language / Any Platform' },
+                        { id: 'middleware', t: 'Node.js / Express', d: 'High-speed middleware pattern' },
+                        { id: 'python', t: 'Python / Flask / Fast', d: 'Native library integration' },
+                        { id: 'schema', t: 'Payload Schema', d: 'Standardized JSON structure' }
+                     ].map((nav, i) => (
+                        <button 
+                           key={i}
+                           onClick={() => setActiveDocTab(nav.id)}
+                           className={cn(
+                              "text-left p-6 border-b border-[#c5c0b1]/50 transition-all group",
+                              activeDocTab === nav.id ? "bg-[#fffefb] border-r-4 border-r-[#ff4f00]" : "hover:bg-[#fffefb]"
+                           )}
+                        >
+                           <p className={cn(
+                              "text-[12px] font-bold uppercase tracking-tight mb-1",
+                              activeDocTab === nav.id ? "text-[#ff4f00]" : "text-[#201515]"
+                           )}>{nav.t}</p>
+                           <p className="text-[10px] text-[#939084] font-medium">{nav.d}</p>
+                        </button>
+                     ))}
+                  </nav>
+               </div>
+
+               {/* Documentation Content */}
+               <div className="lg:col-span-9 p-0 flex flex-col">
+                  {/* Top Header */}
+                  <div className="px-10 py-6 border-b border-[#c5c0b1] bg-[#fcfcfc] flex items-center justify-between">
+                     <div className="flex items-center gap-3">
+                        <Globe size={14} className="text-[#ff4f00]" />
+                        <span className="text-[11px] font-bold text-[#201515] uppercase tracking-widest">
+                           {activeDocTab === 'universal' && 'Protocol: universal_rest_v1.json'}
+                           {activeDocTab === 'middleware' && 'Implementation: express_middleware.js'}
+                           {activeDocTab === 'python' && 'Implementation: flask_telemetry.py'}
+                           {activeDocTab === 'schema' && 'Specification: payload_v1.2.json'}
+                        </span>
+                     </div>
+                     <div className="flex items-center gap-6">
+                        <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest flex items-center gap-1">
+                           <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Language Agnostic
+                        </span>
+                     </div>
+                  </div>
+
+                  {/* Main Display Area */}
+                  <div className="flex-1 grid grid-cols-1 xl:grid-cols-2">
+                     <div className="p-10 border-r border-[#c5c0b1]">
+                        <h3 className="text-[11px] font-black text-[#201515] uppercase tracking-widest mb-6">
+                           {activeDocTab === 'universal' && 'How it Works'}
+                           {activeDocTab === 'middleware' && 'Execution Logic'}
+                           {activeDocTab === 'python' && 'Background Shipping'}
+                           {activeDocTab === 'schema' && 'Data Structure'}
+                        </h3>
+                        <div className="space-y-6">
+                           <p className="text-[13px] text-[#939084] font-medium leading-relaxed">
+                              {activeDocTab === 'universal' && 'Owlpi treats all data sources equally. As long as your application can send a Standard HTTP POST request, you are ready to monitor.'}
+                              {activeDocTab === 'middleware' && 'Our Node.js middleware captures performance telemetry using the finish event. This ensures data ingestion only occurs after the client has received their response.'}
+                              {activeDocTab === 'python' && 'Python applications can use standard decorators or background threads to ship telemetry without blocking the main execution loop.'}
+                              {activeDocTab === 'schema' && 'The Owlpi protocol requires a standardized set of keys to ensure your charts and metrics are aggregated with high precision.'}
+                           </p>
+                           
+                           <div className="bg-[#fcfcfc] border border-[#c5c0b1] p-6 rounded-[2px] space-y-4">
+                              <h4 className="text-[9px] font-bold text-[#201515] uppercase tracking-[0.2em]">
+                                 {activeDocTab === 'schema' ? 'Core Properties' : 'The Ingestion Rule'}
+                              </h4>
+                              {activeDocTab === 'schema' ? (
+                                <div className="space-y-2">
+                                   <p className="text-[10px] font-mono text-[#201515]">serviceName: string</p>
+                                   <p className="text-[10px] font-mono text-[#201515]">latencyMs: number</p>
+                                </div>
+                              ) : (
+                                <p className="text-[11px] text-[#939084] leading-relaxed italic">
+                                   "If it speaks HTTP, it speaks Owlpi."
+                                </p>
+                              )}
+                              <div className="grid grid-cols-2 gap-4 pt-2">
+                                 <div>
+                                    <p className="text-[10px] font-bold text-[#939084] uppercase mb-1">Method</p>
+                                    <p className="text-[12px] font-mono text-[#ff4f00] font-bold">POST</p>
+                                 </div>
+                                 <div>
+                                    <p className="text-[10px] font-bold text-[#939084] uppercase mb-1">Payload</p>
+                                    <p className="text-[12px] font-mono text-[#201515]">JSON</p>
+                                 </div>
+                              </div>
+                           </div>
+
+                           <div className="flex items-center gap-2 p-3 bg-[#201515] text-white rounded-[2px]">
+                              <Terminal size={14} className="text-[#ff4f00]" />
+                              <span className="text-[10px] font-bold uppercase tracking-tight">Works with: Go, Rust, Ruby, PHP, Java & more.</span>
+                           </div>
+                        </div>
+                     </div>
+
+                     <div className="bg-[#1a1a1a] p-10 font-mono text-[13px] leading-relaxed relative group overflow-hidden">
+                        <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                           <button className="bg-white/10 hover:bg-white/20 text-white p-2 rounded transition-colors">
+                              <Copy size={14} />
+                           </button>
+                        </div>
+                        
+                        {activeDocTab === 'universal' && (
+                           <>
+                              <pre className="text-white/40 italic mb-6">// Universal Integration (Any Language)</pre>
+                              <pre className="text-white">POST <span className="text-emerald-400">https://owlpi.app/api/hit</span></pre>
+                              <pre className="text-white">Headers: {"{"}</pre>
+                              <pre className="text-white">  <span className="text-emerald-400">"x-api-key"</span>: <span className="text-white">"YOUR_KEY"</span>,</pre>
+                              <pre className="text-white">  <span className="text-emerald-400">"Content-Type"</span>: <span className="text-emerald-400">"application/json"</span></pre>
+                              <pre className="text-white">{"}"}</pre>
+                              <br />
+                              <pre className="text-white">Body: {"{"}</pre>
+                              <pre className="text-white">  <span className="text-[#939084]">"serviceName"</span>: <span className="text-emerald-400">"api-gateway"</span>,</pre>
+                              <pre className="text-white">  <span className="text-[#939084]">"endpoint"</span>: <span className="text-emerald-400">"/v1/users"</span>,</pre>
+                              <pre className="text-white">  <span className="text-[#939084]">"statusCode"</span>: <span className="text-white">200</span>,</pre>
+                              <pre className="text-white">  <span className="text-[#939084]">"latencyMs"</span>: <span className="text-white">45</span></pre>
+                              <pre className="text-white">{"}"}</pre>
+                           </>
+                        )}
+
+                        {activeDocTab === 'middleware' && (
+                           <>
+                              <pre className="text-white/40 italic mb-6">// Express Middleware Pattern</pre>
+                              <pre className="text-[#ff4f00]">app.use(<span className="text-white">async</span> (req, res, next) =&gt; {"{"}</pre>
+                              <pre className="text-white">  <span className="text-[#939084]">const</span> start = Date.now();</pre>
+                              <pre className="text-white">  res.on(<span className="text-emerald-400">'finish'</span>, () =&gt; {"{"}</pre>
+                              <pre className="text-white">    owlpi.logHit({"{"}</pre>
+                              <pre className="text-white">      endpoint: req.path,</pre>
+                              <pre className="text-white">      latency: Date.now() - start</pre>
+                              <pre className="text-white">    {"}"});</pre>
+                              <pre className="text-white">  {"}"});</pre>
+                              <pre className="text-white">  next();</pre>
+                              <pre className="text-[#ff4f00]">{"}"});</pre>
+                           </>
+                        )}
+
+                        {activeDocTab === 'python' && (
+                           <>
+                              <pre className="text-white/40 italic mb-6"># Flask After-Request Hook</pre>
+                              <pre className="text-white"><span className="text-[#ff4f00]">@app.after_request</span></pre>
+                              <pre className="text-white"><span className="text-[#939084]">def</span> <span className="text-emerald-400">owlpi_telemetry</span>(response):</pre>
+                              <pre className="text-white">    owlpi.log_hit(</pre>
+                              <pre className="text-white">        endpoint=request.path,</pre>
+                              <pre className="text-white">        status=response.status_code,</pre>
+                              <pre className="text-white">        latency=get_latency()</pre>
+                              <pre className="text-white">    )</pre>
+                              <pre className="text-white">    <span className="text-[#939084]">return</span> response</pre>
+                           </>
+                        )}
+
+                        {activeDocTab === 'schema' && (
+                           <>
+                              <pre className="text-white/40 italic mb-6">// Ingestion Schema Definition</pre>
+                              <pre className="text-white">{"{"}</pre>
+                              <pre className="text-white">  <span className="text-[#939084]">"serviceName"</span>: <span className="text-emerald-400">"string"</span>,</pre>
+                              <pre className="text-white">  <span className="text-[#939084]">"endpoint"</span>: <span className="text-emerald-400">"string"</span>,</pre>
+                              <pre className="text-white">  <span className="text-[#939084]">"method"</span>: <span className="text-emerald-400">"GET | POST | etc"</span>,</pre>
+                              <pre className="text-white">  <span className="text-[#939084]">"statusCode"</span>: <span className="text-white">number</span>,</pre>
+                              <pre className="text-white">  <span className="text-[#939084]">"latencyMs"</span>: <span className="text-white">number</span></pre>
+                              <pre className="text-white">{"}"}</pre>
+                           </>
+                        )}
+                        <br />
+                        <pre className="text-white/40 italic">// 202 Accepted</pre>
+                     </div>
+                  </div>
+
+                  {/* Bottom Footer */}
+                  <div className="px-10 py-6 border-t border-[#c5c0b1] bg-[#fcfcfc] flex items-center justify-between">
+                     <div className="flex gap-10">
+                        <div className="flex items-center gap-2">
+                           <ShieldCheck size={14} className="text-[#939084]" />
+                           <span className="text-[10px] font-bold text-[#201515] uppercase tracking-widest">Secure Ingestion</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                           <Cpu size={14} className="text-[#939084]" />
+                           <span className="text-[10px] font-bold text-[#201515] uppercase tracking-widest">Any Architecture</span>
+                        </div>
+                     </div>
+                     <button className="text-[11px] font-black text-[#ff4f00] uppercase tracking-widest hover:underline flex items-center gap-2">
+                        View Full API Spec <ArrowUpRight size={14} />
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </div>
       </section>
 
       {/* Pricing Section */}
