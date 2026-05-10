@@ -32,7 +32,7 @@ class ApiHitRepository extends BaseRepository {
             const {
                 limit = 100,
                 skip = 0,
-                sort = { timestampt: -1 },
+                sort = { timestamp: -1 },
             } = options;
             const hits = await this.model
                 .find(filter)

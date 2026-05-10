@@ -9,6 +9,7 @@ import OrganizationPanel from "./components/Dashboard/OrganizationPanel.jsx";
 import TeamPanel from "./components/Dashboard/TeamPanel.jsx";
 import SystemAdminPanel from "./components/Dashboard/SystemAdminPanel.jsx";
 import RecentHitsPanel from "./components/Dashboard/RecentHitsPanel.jsx";
+import ArchiveExplorerPanel from "./components/Dashboard/ArchiveExplorerPanel.jsx";
 import DocumentationPanel from "./components/Dashboard/DocumentationPanel.jsx";
 
 // High-fidelity Mock data for Guest/Demo mode
@@ -61,7 +62,10 @@ export default function DashboardPage({ user, onRequireAuth, onBackHome }) {
   const [error, setError] = useState("");
   const [data, setData] = useState(null);
   const [recentHits, setRecentHits] = useState([]);
-  const [liveFilters, setLiveFilters] = useState({ endpoint: "", ip: "" });
+  const [historyData, setHistoryData] = useState({ hits: [], pagination: { total: 0, page: 1, limit: 50, pages: 1 } });
+  const [liveFilters, setLiveFilters] = useState({});
+  const [historyFilters, setHistoryFilters] = useState({ startTime: "", endTime: "" });
+  const [historyPage, setHistoryPage] = useState(1);
   const [currentView, setCurrentView] = useState("metrics");
 
   const isSuperAdmin = profile?.role === "super_admin";
@@ -157,6 +161,9 @@ export default function DashboardPage({ user, onRequireAuth, onBackHome }) {
       const qs = new URLSearchParams();
       if (liveFilters.endpoint) qs.append("endpoint", liveFilters.endpoint);
       if (liveFilters.ip) qs.append("ip", liveFilters.ip);
+      if (liveFilters.serviceName) qs.append("serviceName", liveFilters.serviceName);
+      if (liveFilters.method) qs.append("method", liveFilters.method);
+      if (liveFilters.statusCode) qs.append("statusCode", liveFilters.statusCode);
 
       const res = await apiRequest(
         `/api/analytics/recent-hits?${qs.toString()}`,
@@ -169,13 +176,43 @@ export default function DashboardPage({ user, onRequireAuth, onBackHome }) {
     }
   }, [isGuest, profile, liveFilters]);
 
+  const loadHistory = useCallback(async () => {
+    if (isGuest || profile?.isDemo) return;
+    setLoading(true);
+    try {
+      const qs = new URLSearchParams({
+        page: String(historyPage),
+        limit: "50"
+      });
+      if (historyFilters.endpoint) qs.append("endpoint", historyFilters.endpoint);
+      if (historyFilters.ip) qs.append("ip", historyFilters.ip);
+      if (historyFilters.serviceName) qs.append("serviceName", historyFilters.serviceName);
+      if (historyFilters.method) qs.append("method", historyFilters.method);
+      if (historyFilters.statusCode) qs.append("statusCode", historyFilters.statusCode);
+      if (historyFilters.startTime) qs.append("startTime", historyFilters.startTime);
+      if (historyFilters.endTime) qs.append("endTime", historyFilters.endTime);
+
+      const res = await apiRequest(`/api/analytics/history?${qs.toString()}`);
+      setHistoryData(res.data);
+    } catch (e) {
+      console.error("Failed to load history:", e);
+    } finally {
+      setLoading(false);
+    }
+  }, [isGuest, profile, historyFilters, historyPage]);
+
   useEffect(() => {
     if (profileState !== "ok" || !canViewDashboard(profile)) return undefined;
 
     if (currentView === "live") {
       loadRecentHits();
-      const interval = setInterval(loadRecentHits, 10000); // Auto-refresh every 10s
+      const interval = setInterval(loadRecentHits, 10000);
       return () => clearInterval(interval);
+    }
+
+    if (currentView === "archive") {
+      loadHistory();
+      return undefined;
     }
 
     // Default to metrics view
@@ -183,7 +220,7 @@ export default function DashboardPage({ user, onRequireAuth, onBackHome }) {
       void loadDashboard();
     });
     return () => cancelAnimationFrame(id);
-  }, [loadDashboard, loadRecentHits, profileState, profile, currentView]);
+  }, [loadDashboard, loadRecentHits, loadHistory, profileState, profile, currentView]);
 
   if (profileState === "loading") {
     return (
@@ -257,6 +294,16 @@ export default function DashboardPage({ user, onRequireAuth, onBackHome }) {
                 loading={loading}
                 filters={liveFilters}
                 setFilters={setLiveFilters}
+              />
+            )}
+            {currentView === "archive" && (
+              <ArchiveExplorerPanel
+                hits={historyData.hits}
+                pagination={historyData.pagination}
+                loading={loading}
+                filters={historyFilters}
+                setFilters={setHistoryFilters}
+                setPage={setHistoryPage}
               />
             )}
             {currentView === "system" && isSuperAdmin && (

@@ -69,14 +69,29 @@ class AnalyticsService {
 
     async getRecentHits(clientId, filters = {}, limit = 50) {
         try {
-            const query = { clientId };
+            const query = {};
+            if (clientId) {
+                query.clientId = clientId;
+            }
             
             if (filters.ip) {
                 query.ip = filters.ip;
             }
             
             if (filters.endpoint) {
-                query.endpoint = { $regex: filters.endpoint, $options: 'i' }; // Case-insensitive search
+                query.endpoint = { $regex: filters.endpoint, $options: 'i' };
+            }
+
+            if (filters.serviceName) {
+                query.serviceName = { $regex: filters.serviceName, $options: 'i' };
+            }
+
+            if (filters.method) {
+                query.method = filters.method.toUpperCase();
+            }
+
+            if (filters.statusCode) {
+                query.statusCode = parseInt(filters.statusCode, 10);
             }
 
             // Fetch from MongoDB
@@ -88,6 +103,48 @@ class AnalyticsService {
             return hits;
         } catch (error) {
             logger.error("Error getting recent hits:", error);
+            throw error;
+        }
+    }
+
+    async getHistory(clientId, filters = {}, options = {}) {
+        try {
+            const { page = 1, limit = 50 } = options;
+            const skip = (page - 1) * limit;
+
+            const query = {};
+            if (clientId) query.clientId = clientId;
+
+            if (filters.ip) query.ip = filters.ip;
+            if (filters.endpoint) query.endpoint = { $regex: filters.endpoint, $options: 'i' };
+            if (filters.serviceName) query.serviceName = { $regex: filters.serviceName, $options: 'i' };
+            if (filters.method) query.method = filters.method.toUpperCase();
+            if (filters.statusCode) query.statusCode = parseInt(filters.statusCode, 10);
+
+            // Add time range filter
+            const { startTime, endTime } = this.parseTimeFilters(filters);
+            query.timestamp = { $gte: startTime, $lte: endTime };
+
+            const [hits, total] = await Promise.all([
+                this.apiHitRepo.find(query, { 
+                    sort: { timestamp: -1 }, 
+                    limit,
+                    skip 
+                }),
+                this.apiHitRepo.count(query)
+            ]);
+
+            return {
+                hits,
+                pagination: {
+                    total,
+                    page,
+                    limit,
+                    pages: Math.ceil(total / limit)
+                }
+            };
+        } catch (error) {
+            logger.error("Error getting historical hits:", error);
             throw error;
         }
     }

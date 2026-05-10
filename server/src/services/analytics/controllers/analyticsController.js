@@ -137,11 +137,33 @@ export class AnalyticsController {
 
     async getRecentHits(req, res, next) {
         try {
-            const { ip, endpoint } = req.query;
+            const { ip, endpoint, serviceName, method, statusCode } = req.query;
             const clientId = req.user.role === 'super_admin' ? null : req.user.clientId;
-            const hits = await this.analyticsService.getRecentHits(clientId, { ip, endpoint });
+            const hits = await this.analyticsService.getRecentHits(clientId, { 
+                ip, 
+                endpoint, 
+                serviceName, 
+                method, 
+                statusCode 
+            });
             
             res.status(200).json(ResponseFormat.success(hits));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getHistory(req, res, next) {
+        try {
+            const { ip, endpoint, serviceName, method, statusCode, page, limit, startTime, endTime } = req.query;
+            const clientId = req.user.role === 'super_admin' ? null : req.user.clientId;
+            
+            const history = await this.analyticsService.getHistory(clientId, 
+                { ip, endpoint, serviceName, method, statusCode, startTime, endTime },
+                { page: parseInt(page) || 1, limit: parseInt(limit) || 50 }
+            );
+            
+            res.status(200).json(ResponseFormat.success(history));
         } catch (error) {
             next(error);
         }

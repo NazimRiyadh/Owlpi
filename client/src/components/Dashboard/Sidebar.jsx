@@ -20,6 +20,8 @@ import {
   ArrowRight,
   CheckCircle2,
   Zap,
+  Database,
+  Search,
   BookOpen
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -46,6 +48,7 @@ export default function Sidebar({
       items: [
         { id: "metrics", label: "Dashboard", icon: Activity },
         { id: "live", label: "Live Traffic", icon: Zap },
+        { id: "archive", label: "Archive", icon: Database },
         { id: "docs", label: "Documentation", icon: BookOpen },
         { id: "settings", label: "Organizations", icon: Layers },
         {

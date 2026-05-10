@@ -17,4 +17,8 @@ router.get("/recent-hits", authenticate, (req, res, next) => {
     analyticsController.getRecentHits(req, res, next);
 });
 
+router.get("/history", authenticate, (req, res, next) => {
+    analyticsController.getHistory(req, res, next);
+});
+
 export default router;

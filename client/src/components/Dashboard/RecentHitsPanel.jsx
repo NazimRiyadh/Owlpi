@@ -39,38 +39,94 @@ export default function RecentHitsPanel({ hits = [], loading, filters, setFilter
         </p>
       </div>
 
-      {/* Search Toolbar (NEW) */}
-      <div className="flex flex-wrap gap-4 items-center bg-[#fcfcfc] border border-[#c5c0b1] p-4 rounded-[4px]">
-        <div className="flex-1 min-w-[200px]">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#939084]" size={14} />
+      {/* Search & Intelligence Toolbar */}
+      <div className="bg-[#fcfcfc] border border-[#c5c0b1] rounded-[4px] p-6 shadow-sm space-y-6">
+        <div className="flex items-center gap-2 mb-2">
+           <Search size={14} className="text-[#ff4f00]" />
+           <span className="text-[10px] font-black text-[#201515] uppercase tracking-[0.3em]">Telemetry Command Center</span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-[9px] font-bold text-[#939084] uppercase tracking-widest">Resource Path</label>
+            <div className="relative">
+              <Terminal className="absolute left-3 top-1/2 -translate-y-1/2 text-[#c5c0b1]" size={12} />
+              <input 
+                type="text" 
+                placeholder="/api/v1/..." 
+                value={localFilters.endpoint || ''}
+                onChange={(e) => setLocalFilters({ ...localFilters, endpoint: e.target.value })}
+                className="w-full bg-[#fffefb] border border-[#c5c0b1] rounded-[2px] py-2 pl-9 text-[11px] font-bold placeholder:text-[#c5c0b1] focus:border-[#ff4f00] outline-none transition-colors"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-[9px] font-bold text-[#939084] uppercase tracking-widest">Service Identity</label>
+            <div className="relative">
+              <Cpu className="absolute left-3 top-1/2 -translate-y-1/2 text-[#c5c0b1]" size={12} />
+              <input 
+                type="text" 
+                placeholder="e.g. auth-srv" 
+                value={localFilters.serviceName || ''}
+                onChange={(e) => setLocalFilters({ ...localFilters, serviceName: e.target.value })}
+                className="w-full bg-[#fffefb] border border-[#c5c0b1] rounded-[2px] py-2 pl-9 text-[11px] font-bold placeholder:text-[#c5c0b1] focus:border-[#ff4f00] outline-none transition-colors"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-[9px] font-bold text-[#939084] uppercase tracking-widest">Origin Host</label>
+            <div className="relative">
+              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 text-[#c5c0b1]" size={12} />
+              <input 
+                type="text" 
+                placeholder="127.0.0.1" 
+                value={localFilters.ip || ''}
+                onChange={(e) => setLocalFilters({ ...localFilters, ip: e.target.value })}
+                className="w-full bg-[#fffefb] border border-[#c5c0b1] rounded-[2px] py-2 pl-9 text-[11px] font-bold placeholder:text-[#c5c0b1] focus:border-[#ff4f00] outline-none transition-colors"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-[9px] font-bold text-[#939084] uppercase tracking-widest">HTTP Method</label>
+            <select 
+              value={localFilters.method || ''}
+              onChange={(e) => setLocalFilters({ ...localFilters, method: e.target.value })}
+              className="w-full bg-[#fffefb] border border-[#c5c0b1] rounded-[2px] py-2 px-3 text-[11px] font-bold focus:border-[#ff4f00] outline-none transition-colors appearance-none cursor-pointer"
+            >
+              <option value="">ANY METHOD</option>
+              {['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-[9px] font-bold text-[#939084] uppercase tracking-widest">Status Code</label>
             <input 
               type="text" 
-              placeholder="Search Endpoint (e.g. /users)" 
-              value={localFilters.endpoint || ''}
-              onChange={(e) => setLocalFilters({ ...localFilters, endpoint: e.target.value })}
-              className="w-full bg-[#fffefb] border border-[#c5c0b1] rounded-[2px] py-2 pl-9 pr-4 text-[12px] font-bold placeholder:text-[#939084] focus:border-[#ff4f00] outline-none transition-colors"
+              placeholder="e.g. 500" 
+              value={localFilters.statusCode || ''}
+              onChange={(e) => setLocalFilters({ ...localFilters, statusCode: e.target.value })}
+              className="w-full bg-[#fffefb] border border-[#c5c0b1] rounded-[2px] py-2 px-3 text-[11px] font-bold placeholder:text-[#c5c0b1] focus:border-[#ff4f00] outline-none transition-colors"
             />
           </div>
         </div>
-        <div className="w-[180px]">
-          <div className="relative">
-            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 text-[#939084]" size={14} />
-            <input 
-              type="text" 
-              placeholder="Filter IP" 
-              value={localFilters.ip || ''}
-              onChange={(e) => setLocalFilters({ ...localFilters, ip: e.target.value })}
-              className="w-full bg-[#fffefb] border border-[#c5c0b1] rounded-[2px] py-2 pl-9 pr-4 text-[12px] font-bold placeholder:text-[#939084] focus:border-[#ff4f00] outline-none transition-colors"
-            />
-          </div>
+
+        <div className="flex justify-between items-center pt-4 border-t border-[#eceae3]">
+           <button 
+             onClick={() => setLocalFilters({})}
+             className="text-[9px] font-bold text-[#939084] uppercase tracking-widest hover:text-[#201515] transition-colors"
+           >
+             Clear Filters
+           </button>
+           <button 
+             onClick={handleApply}
+             className="bg-[#ff4f00] text-white px-10 h-10 rounded-[2px] text-[10px] font-black uppercase tracking-widest hover:bg-[#201515] transition-all flex items-center gap-2 shadow-lg shadow-[#ff4f00]/20"
+           >
+             Apply Telemetry Filter <ArrowRight size={14} />
+           </button>
         </div>
-        <button 
-          onClick={handleApply}
-          className="bg-[#201515] text-[#fffefb] px-6 h-9 rounded-[2px] text-[10px] font-bold uppercase tracking-widest hover:bg-[#ff4f00] transition-colors border border-[#201515] hover:border-[#ff4f00]"
-        >
-          Execute Filter
-        </button>
       </div>
 
       <div className="bg-[#fffefb] border border-[#c5c0b1] rounded-[4px] overflow-hidden">
