@@ -9,6 +9,7 @@ import rabbitmq from "./shared/config/rabbitmq.js";
 import errorhandler from "./shared/middlewares/errorHandler.js";
 import ResponseFormat from "./shared/utils/responseFormat.js";
 import cookieParser from "cookie-parser";
+import { initializeDatabase } from "./shared/config/dbInit.js";
 
 import authRouter from "./services/auth/routes/authRoutes.js";
 import clientRouter from "./services/client/routes/clientRoutes.js";
@@ -85,6 +86,7 @@ async function initializeConnection() {
         await mongo.connect();
 
         await postgres.testConnection();
+        await initializeDatabase();
 
         await rabbitmq.connect();
 
