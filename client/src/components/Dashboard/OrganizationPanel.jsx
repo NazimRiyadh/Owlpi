@@ -1,28 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  Building2, 
-  Plus, 
-  Trash2, 
-  Key, 
-  Mail, 
-  Globe, 
-  Shield, 
-  Terminal,
+  Key,
   Activity,
-  ArrowRight,
-  ShieldCheck,
-  Zap,
   CheckCircle2,
   AlertCircle,
   Search,
-  ExternalLink,
   Eye,
   EyeOff,
   LayoutGrid,
   FilePlus2,
   Database,
   ArrowUpRight,
-  X
+  X,
+  Copy
 } from 'lucide-react';
 import { apiRequest } from '../../api.js';
 import { Button } from '@/components/ui/button';
@@ -341,7 +331,7 @@ export default function OrganizationPanel({ profile }) {
                                      setMessage('Credential copied.');
                                    }
                                 }}>
-                                   <Plus size={10} className="rotate-45" />
+                                   <Copy size={10} />
                                 </Button>
                              </div>
                           </div>

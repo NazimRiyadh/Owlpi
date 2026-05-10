@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { RefreshCw, AlertCircle, X } from "lucide-react";
+import { AlertCircle, X } from "lucide-react";
 import { apiRequest, canViewDashboard } from "./api.js";
 import Sidebar from "./components/Dashboard/Sidebar.jsx";
 import DashboardHeader from "./components/Dashboard/DashboardHeader.jsx";
@@ -67,6 +67,7 @@ export default function DashboardPage({ user, onRequireAuth, onBackHome }) {
   const [historyFilters, setHistoryFilters] = useState({ startTime: "", endTime: "" });
   const [historyPage, setHistoryPage] = useState(1);
   const [currentView, setCurrentView] = useState("metrics");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const isSuperAdmin = profile?.role === "super_admin";
   const isGuest = profile?.role === "GUEST";
@@ -258,12 +259,16 @@ export default function DashboardPage({ user, onRequireAuth, onBackHome }) {
         setCurrentView={setCurrentView}
         onLogout={onLogout}
         onBackHome={onBackHome}
-        range={range}
-        setRange={setRange}
+        isCollapsed={isSidebarCollapsed}
+        setIsCollapsed={setIsSidebarCollapsed}
       />
 
       <div className="flex flex-col flex-1 overflow-hidden">
-        <DashboardHeader profile={profile} />
+        <DashboardHeader 
+          profile={profile} 
+          range={range}
+          setRange={setRange}
+        />
 
         <main className="flex-1 overflow-y-auto scrollbar-hide bg-[#fcfcfc]/50">
           {error && (

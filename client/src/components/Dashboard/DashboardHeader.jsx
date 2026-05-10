@@ -4,11 +4,14 @@ import {
   Settings, 
   HelpCircle,
   Cpu,
-  Server
+  Server,
+  Terminal,
+  Timer
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
-export default function DashboardHeader({ profile }) {
+export default function DashboardHeader({ profile, range, setRange }) {
   return (
     <header className="h-20 border-b border-[#c5c0b1] bg-[#fffefb]/80 backdrop-blur-md flex items-center justify-between px-10 z-10">
       <div className="flex items-center gap-6">
@@ -20,6 +23,29 @@ export default function DashboardHeader({ profile }) {
         <div className="flex items-center gap-2 text-[#939084]">
            <Server size={14} />
            <span className="text-[10px] font-bold uppercase tracking-widest">Platform Core</span>
+        </div>
+        
+        <div className="h-4 w-px bg-[#c5c0b1]" />
+        
+        {/* Time Protocol Selector */}
+        <div className="flex items-center gap-3">
+          <span className="text-[9px] font-black text-[#939084] uppercase tracking-[0.2em]">Window</span>
+          <div className="flex gap-1 p-0.5 bg-[#eceae3]/30 rounded-[4px] border border-[#c5c0b1]/50">
+            {["1h", "24h", "7d"].map((t) => (
+              <button
+                key={t}
+                onClick={() => setRange(t)}
+                className={cn(
+                  "px-3 py-1 text-[9px] font-black uppercase transition-all rounded-[2px]",
+                  range === t
+                    ? "bg-[#fffefb] text-[#ff4f00] shadow-sm border border-[#c5c0b1]"
+                    : "text-[#939084] hover:text-[#201515]",
+                )}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
