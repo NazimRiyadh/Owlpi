@@ -10,7 +10,6 @@ router.get("/stats", authenticate, (req, res, next) => {
 });
 
 router.get("/dashboard", authenticate, (req, res, next) => {
-    console.log("Hit /api/analytics/dashboard");
     analyticsController.getDashboard(req, res, next);
 });
 

@@ -15,9 +15,13 @@ class MongoConnect {
                 return this.connection;
             }
 
-            await mongoose.connect(config.mongo.uri, {
+            const options = {
                 dbName: config.mongo.dbName,
-            });
+                serverSelectionTimeoutMS: 5000,
+                connectTimeoutMS: 10000,
+            };
+
+            await mongoose.connect(config.mongo.uri, options);
 
             this.connection = mongoose.connection;
             this.isConnected = true;

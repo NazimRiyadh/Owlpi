@@ -21,6 +21,8 @@ const config = {
     // MOngodb
     mongo: {
         uri:
+            process.env.MONGODB_URL ||
+            process.env.MONGO_URL ||
             process.env.MONGO_URI ||
             "mongodb://localhost:27017/api_monitoring_system",
         dbName: process.env.MONGO_DB_NAME || "api_monitoring_system",
@@ -28,11 +30,16 @@ const config = {
 
     // postgreSQL
     postgres: {
-        host: process.env.PG_HOST || "localhost",
-        port: readInt(process.env.PG_PORT, 5432),
-        database: process.env.PG_DATABASE || "api_monitoring",
-        user: process.env.PG_USER || "postgres",
-        password: process.env.PG_PASSWORD || "postgres",
+        url: process.env.DATABASE_URL, // Railway/Heroku standard
+        host: process.env.PGHOST || process.env.PG_HOST || "localhost",
+        port: readInt(process.env.PGPORT || process.env.PG_PORT, 5432),
+        database:
+            process.env.PGDATABASE ||
+            process.env.PG_DATABASE ||
+            "api_monitoring",
+        user: process.env.PGUSER || process.env.PG_USER || "postgres",
+        password:
+            process.env.PGPASSWORD || process.env.PG_PASSWORD || "postgres",
     },
 
     // RabbitMQ
@@ -67,6 +74,9 @@ const config = {
         path: "/",
         expiresIn: 24 * 60 * 60 * 1000,
     },
+
+    // CORS
+    corsOrigin: process.env.CORS_ORIGIN || true,
 };
 
 if (config.node_env === "production" && !process.env.JWT_SECRET) {

@@ -11,15 +11,21 @@ class PostgresConnection {
 
     getPool() {
         if (!this.pool) {
+            const poolConfig = config.postgres.url
+                ? { connectionString: config.postgres.url }
+                : {
+                      host: config.postgres.host,
+                      port: config.postgres.port,
+                      database: config.postgres.database,
+                      user: config.postgres.user,
+                      password: config.postgres.password,
+                  };
+
             this.pool = new Pool({
-                host: config.postgres.host,
-                port: config.postgres.port,
-                database: config.postgres.database,
-                user: config.postgres.user,
-                password: config.postgres.password,
+                ...poolConfig,
                 max: 20,
                 idleTimeoutMillis: 30000,
-                connectionTimeoutMillis: 2000,
+                connectionTimeoutMillis: 5000,
             });
 
             this.pool.on("error", (err) => {
