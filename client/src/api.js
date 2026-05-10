@@ -2,10 +2,17 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 
 export async function apiRequest(path, options = {}) {
   let response;
+  const savedUser = JSON.parse(localStorage.getItem('owlpi_user') || 'null');
+  const token = savedUser?.token;
+
   try {
     response = await fetch(`${API_BASE}${path}`, {
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      headers: { 
+        'Content-Type': 'application/json', 
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        ...(options.headers || {}) 
+      },
       ...options,
     });
   } catch (err) {

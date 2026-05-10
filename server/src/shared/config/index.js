@@ -69,8 +69,8 @@ const config = {
 
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production" || true, // Force secure for cross-domain
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: "/",
         expiresIn: 24 * 60 * 60 * 1000,
     },

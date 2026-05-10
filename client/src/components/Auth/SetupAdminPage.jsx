@@ -46,7 +46,8 @@ export default function SetupAdminPage() {
       }
     } catch (err) {
       const errorMsg =
-        err.response?.data?.message ||
+        err.payload?.message ||
+        err.message ||
         "Onboarding failed. A Super Admin might already exist.";
       setError(errorMsg);
     } finally {

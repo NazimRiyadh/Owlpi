@@ -33,7 +33,7 @@ class AuthController {
 
             res.status(201).json(
                 ResponseFormat.success(
-                    user,
+                    { ...user, token },
                     "Super admin created successfully",
                     201,
                 ),
@@ -91,7 +91,7 @@ class AuthController {
 
             res.status(200).json(
                 ResponseFormat.success(
-                    user,
+                    { ...user, token },
                     "User logged in successfullly",
                     200,
                 ),
