@@ -1,5 +1,11 @@
-const API_KEY = "apim_a98d38ef173eef2a804e77d74971df54b743b65e7b4e8325";
-const INGEST_URL = "http://localhost:5000/api/hit";
+const API_KEY = process.env.API_KEY;
+const INGEST_URL = process.env.INGEST_URL || "http://localhost:5000/api/hit";
+
+if (!API_KEY) {
+  console.error("API_KEY is required. Example:");
+  console.error("  API_KEY=apim_your_key node generate_traffic.js");
+  process.exit(1);
+}
 
 const paths = [
   "/api/v1/users",
@@ -44,4 +50,4 @@ async function sendHit() {
 }
 
 console.log("🚀 Starting Local Traffic Generation...");
-setInterval(sendHit, 1500); // Send a hit every 1.5 seconds
+setInterval(sendHit, 1500);

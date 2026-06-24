@@ -7,9 +7,10 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, ".env") });
 
-// Use your Railway MONGO_URI if available, otherwise fallback to local
 const MONGO_URI =
-    "mongodb://mongo:TRdqyCLVIfmsFKIuHjABeiCcJTOcIcGS@mongodb.railway.internal:27017";
+    process.env.MONGO_URI ||
+    "mongodb://localhost:27017/api_monitoring_system";
+const ADMIN_PASSWORD = process.env.SUPER_ADMIN_PASSWORD;
 
 const UserSchema = new mongoose.Schema(
     {
@@ -29,6 +30,13 @@ const UserSchema = new mongoose.Schema(
 const User = mongoose.model("User", UserSchema);
 
 async function createAdmin() {
+    if (!ADMIN_PASSWORD) {
+        console.error(
+            "SUPER_ADMIN_PASSWORD is required. Set it in server/.env before running this script.",
+        );
+        process.exit(1);
+    }
+
     try {
         console.log("Connecting to MongoDB...");
         await mongoose.connect(MONGO_URI);
@@ -40,7 +48,7 @@ async function createAdmin() {
             process.exit(0);
         }
 
-        const hashedPassword = await bcrypt.hash("AdminPass123!", 10);
+        const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);
 
         const newAdmin = new User({
             username: "super_admin",
@@ -54,7 +62,7 @@ async function createAdmin() {
         console.log("-----------------------------------------");
         console.log("SUCCESS: Super Admin created!");
         console.log("Username: super_admin");
-        console.log("Password: AdminPass123!");
+        console.log("Password: (value from SUPER_ADMIN_PASSWORD)");
         console.log("-----------------------------------------");
     } catch (error) {
         console.error("Error creating Super Admin:", error);

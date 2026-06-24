@@ -16,9 +16,12 @@ const ingestLimiter = rateLimit({
         "Too many requests, please try again later",
         429,
     ),
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => {
+        return req.headers["x-api-key"];
+    },
 });
-
-router.use(ingestLimiter);
 
 router.post("/", validateApiKey, ingestLimiter, (req, res, next) => {
     ingestController.ingestHit(req, res, next);
